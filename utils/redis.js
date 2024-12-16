@@ -7,28 +7,29 @@ class RedisClient {
   constructor() {
     // Initialize class
     this.client = createClient({
-      url: 'https://127.0.0.1:6379',
+      url: 'redis://127.0.0.1:6379',
     });
 
-    // Flag to handle redis connection
-    this.connected = false;
+    // Use promise to handle connection state
+    this.connectPromise = new Promise((resolve, reject) => {
+      // If connected successful
+      this.client.on('connect', () => {
+        resolve(true);
+      });
 
-    // Check if connection is successful
-    this.client.on('connect', () => {
-      this.connected = true;
-    });
-
-    // If not successful
-    this.client.on('error', (err) => {
-      console.log(err);
+      // If not connected successful
+      this.client.on('error', (err) => {
+	console.log('Redis connection error:', err);
+	reject(false);
+      });
     });
   }
 
   /**
    * Checks if connection is successful.
    */
-  isAlive() {
-    return this.connected;
+  async isAlive() {
+    return await this.connectPromise;
   }
 
   /**
