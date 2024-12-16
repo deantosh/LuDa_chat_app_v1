@@ -1,7 +1,12 @@
-// Module defines a class DBClient
+/**
+ * Module defines a class DBClient
+ */
 import { MongoClient } from 'mongodb';
 
 class DBClient {
+  /**
+   * Initialize class
+   */
   constructor() {
     // Get environment variables with defaults
     const dbHost = process.env.DB_HOST || 'localhost';
@@ -25,6 +30,9 @@ class DBClient {
     this._connect(dbName);
   }
 
+  /**
+   * Instance method: checks for database connection.
+   */
   async _connect(dbName) {
     try {
       await this.client.connect();
@@ -36,7 +44,9 @@ class DBClient {
     }
   }
 
-  // Get the database instance
+  /**
+   * Get the database instance
+   */
   getDatabase() {
     if (!this.connected) {
       throw new Error('Database not connected');
