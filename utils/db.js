@@ -1,7 +1,7 @@
 /**
  * Module defines a class DBClient
  */
-import { MongoClient } from 'mongodb';
+import mongoose from 'mongoose';
 
 class DBClient {
   /**
@@ -14,44 +14,59 @@ class DBClient {
     const dbName = process.env.DB_DATABASE || 'chat_app';
 
     // Create database URI
-    const uri = `mongodb://${dbHost}:${dbPort}`;
+    this.uri = `mongodb://${dbHost}:${dbPort}/${dbName}`;
 
     // Create MongoDB client
-    this.client = new MongoClient(uri, {
+    this.options = {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-    });
-
-    // Set initial values
-    this.connected = false;
-    this.database = null;
+    };
 
     // Initialize connection
-    this._connect(dbName);
+    this.connected = false;
+    this._connect();
   }
 
   /**
    * Instance method: checks for database connection.
    */
-  async _connect(dbName) {
+  async _connect() {
     try {
-      await this.client.connect();
-      this.database = this.client.db(dbName);
+      await mongoose.connect(this.uri, this.options);
       this.connected = true;
-      console.log(`Connected to MongoDB: ${dbName}`);
+      console.log('Connected to MongoDB...');
     } catch (error) {
       console.error('Error connecting to MongoDB:', error.message);
+      this.connected = false;
     }
   }
 
   /**
-   * Get the database instance
+   * Check connection status
+   */
+  isAlive() {
+    return this.connected;
+  }
+
+  /**
+   * Returns the Mongoose connection instance
    */
   getDatabase() {
     if (!this.connected) {
       throw new Error('Database not connected');
     }
-    return this.database;
+    return mongoose.connection;
+  }
+
+  /**
+   * Closes Mondodb connection.
+   */
+  async closeDatabase() {
+    if (this.connected) {
+      await mongoose.disconnect();
+      this.connected = false;
+      console.log('Disconnected from MongoDB');
+    }
   }
 }
 
