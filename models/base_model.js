@@ -6,14 +6,8 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const baseSchema = new Schema({
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
 });
 
 /**
