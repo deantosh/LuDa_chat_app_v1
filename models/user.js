@@ -1,7 +1,8 @@
 /**
  * Modules defines users model.
+ * User model contains details of application registered users.
  */
-import mongoose from 'mongoose';
+import { mongoose } from '../utils/db';
 import baseSchema from './base_model';
 
 const userSchema = new mongoose.Schema({
@@ -13,7 +14,7 @@ const userSchema = new mongoose.Schema({
   isOnline: { type: Boolean, default: false },
 });
 
-// Include baseSchema
+// Extend Schema with baseSchema
 userSchema.add(baseSchema);
 
 // Register user model and export user object

@@ -2,7 +2,7 @@
  * Module defines userSession model.
  * Model tracks user login sessions.
  */
-import mongoose from 'mongoose';
+import { mongoose } from '../utils/db';
 import baseSchema from './base_model';
 
 const userSessionSchema = new mongoose.Schema({
@@ -12,9 +12,9 @@ const userSessionSchema = new mongoose.Schema({
   expiresAt: { type: Date, required: true },
 });
 
-// Include baseSchema
+// Extend Schema with baseSchema
 userSessionSchema.add(baseSchema);
 
 // Register and export model
-const userSession = mongoose.model(userSessionSchema);
-export default userSession;
+const UserSession = mongoose.model('UserSession', userSessionSchema);
+export default UserSession;
