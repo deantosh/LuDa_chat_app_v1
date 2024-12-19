@@ -1,11 +1,9 @@
 /**
  * Module defines BaseModel for all other models.
  */
-import mongoose from 'mongoose';
+import { mongoose } from '../utils/db';
 
-const { Schema } = mongoose;
-
-const baseSchema = new Schema({
+const baseSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

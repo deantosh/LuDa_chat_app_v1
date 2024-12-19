@@ -1,7 +1,8 @@
 /**
  * Module defines room model.
+ * Room model contains the application chat room details.
  */
-import mongoose from 'mongoose';
+import { mongoose } from '../utils/db';
 import baseSchema from './base_model';
 
 const roomSchema = new mongoose.Schema({
@@ -12,7 +13,7 @@ const roomSchema = new mongoose.Schema({
   members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 });
 
-// Extend with baseSchema
+// Extend Schema with baseSchema
 roomSchema.add(baseSchema);
 
 // Register Room model and export object

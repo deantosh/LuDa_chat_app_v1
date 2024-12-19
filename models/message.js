@@ -1,10 +1,11 @@
 /**
- * Module defines Message model
+ * Module defines Message model.
+ * Message model contains messages sent by users in the chat room.
  */
-import mongoose from 'mongoose';
+import { mongoose } from '../utils/db';
 import baseSchema from './base_model';
 
-const messageSchema = mongoose.Schema({
+const messageSchema = new mongoose.Schema({
   roomId: { type: mongoose.Schema.Types.ObjectId, ref: 'Room', required: true },
   senderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   text: { type: String },
@@ -13,7 +14,7 @@ const messageSchema = mongoose.Schema({
   replies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reply' }],
 });
 
-// Include baseSchema
+// Extend Schema with baseSchema
 messageSchema.add(baseSchema);
 
 // Register and export message model

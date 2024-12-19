@@ -72,4 +72,4 @@ class DBClient {
 
 // Export a singleton instance of DBClient
 const dbClient = new DBClient();
-export default dbClient;
+export { dbClient, mongoose };

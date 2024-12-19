@@ -1,8 +1,8 @@
 /**
  * Module defines a Reaction model.
- * Model stores reactions (e.g emojis) to messages.
+ * Reaction model stores reactions (e.g emojis) to messages.
  */
-import mongoose from 'mongoose';
+import { mongoose } from '../utils/db';
 
 const reactionSchema = new mongoose.Schema({
   messageId: { type: mongoose.Schema.Types.ObjectId, ref: 'Message', required: true },
