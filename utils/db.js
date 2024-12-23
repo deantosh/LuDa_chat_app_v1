@@ -4,29 +4,19 @@
  * CRUD methods are also defined to allow easy access and reytrieval of data from the database.
  */
 import mongoose from 'mongoose';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 
 class DBClient {
   /**
    * Initialize database instance.
    */
-  constructor() {
-    // Get environment variables with defaults
-    const dbHost = process.env.DB_HOST || 'localhost';
-    const dbPort = process.env.DB_PORT || 27017;
-    const dbName = process.env.DB_DATABASE || 'chat_app';
-
-    // Create database URI
-    this.uri = `mongodb://${dbHost}:${dbPort}/${dbName}`;
-
-    // Create MongoDB client
+  constructor({ useInMemory = false } = {}) {
+    this.useInMemory = useInMemory;
     this.options = {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     };
-
-    // Initialize connection
     this.connected = false;
-    this._connect();
   }
 
   /**
@@ -34,6 +24,18 @@ class DBClient {
    */
   async _connect() {
     try {
+      // Handle tests: In memory mockup db
+      if (this.useInMemory) {
+        const memoryServer = await MongoMemoryServer.create();
+        this.uri = memoryServer.getUri();
+      } else {
+        // Handle: mongodb
+        const dbHost = process.env.DB_HOST || 'localhost';
+        const dbPort = process.env.DB_PORT || 27017;
+        const dbName = process.env.DB_DATABASE || 'chat_app';
+        this.uri = `mongodb://${dbHost}:${dbPort}/${dbName}`;
+      }
+
       await mongoose.connect(this.uri, this.options);
       this.connected = true;
       console.log('Connected to MongoDB...');
