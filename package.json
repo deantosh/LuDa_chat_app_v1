@@ -2,21 +2,20 @@
   "name": "LuDa_chat_app_v1",
   "version": "1.0.0",
   "type": "module",
-  "description": "",
+  "description": "A real-time chat application with worker and server scripts.",
   "main": "index.js",
   "scripts": {
     "lint": "./node_modules/.bin/eslint",
-    "check-lint": "lint [0-9]*.js",
+    "check-lint": "npm run lint [0-9]*.js",
     "start-server": "nodemon --exec babel-node --presets @babel/preset-env ./server.js",
     "start-worker": "nodemon --exec babel-node --presets @babel/preset-env ./worker.js",
     "dev": "node --experimental-specifier-resolution=node main.js",
     "test": "jest"
   },
-  "author": "",
+  "author": "luckys-lnx, Deantosh Daidoh",
   "license": "ISC",
   "dependencies": {
     "bull": "^3.16.0",
-    "chai-http": "^4.3.0",
     "express": "^4.17.1",
     "image-thumbnail": "^1.0.10",
     "mime-types": "^2.1.27",
@@ -36,15 +35,40 @@
     "@typescript-eslint/parser": "^5.59.9",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
-    "eslint": "^6.4.0",
+    "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jest": "^22.17.0",
+    "eslint-plugin-react": "^7.37.2",
     "jest": "^26.6.3",
     "mocha": "^6.2.2",
     "nodemon": "^2.0.2",
     "request": "^2.88.0",
     "sinon": "^7.5.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "airbnb-base",
+      "plugin:jest/recommended"
+    ],
+    "env": {
+      "jest": true,
+      "node": true
+    },
+    "plugins": [
+      "jest"
+    ],
+    "rules": {
+      "jest/no-hooks": [
+        "error",
+        {
+          "allow": [
+            "afterEach",
+            "afterAll"
+          ]
+        }
+      ]
+    }
   },
   "jest": {
     "transform": {
