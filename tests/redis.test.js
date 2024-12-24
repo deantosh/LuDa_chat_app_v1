@@ -2,7 +2,6 @@
  * Module defines a test for redis.js.
  * Tests the in-memory store used for application session management.
  */
-
 import redisClient from '../utils/redis';
 
 describe('redis Client Tests', () => {

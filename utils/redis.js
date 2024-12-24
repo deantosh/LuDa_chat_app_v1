@@ -4,32 +4,42 @@
 import { createClient } from 'redis';
 
 class RedisClient {
+  /**
+   * Initialize class
+   */
   constructor() {
-    // Initialize class
+    // Start redis connection
     this.client = createClient({
       url: 'redis://127.0.0.1:6379',
     });
 
-    // Use promise to handle connection state
-    this.connectPromise = new Promise((resolve, reject) => {
-      // If connected successful
-      this.client.on('connect', () => {
-        resolve(true);
-      });
+    // Flag: track connection status
+    this.connectionPromise = this.connect();
+  }
+    
+  async connect() {
+    try {
+      // Complete connection handshake
+      await this.client.connect();
+      console.log('Redis client connected successfully');
+    } catch (err) {
+      console.log('Redis connection error:', err);
+    }
+  }
 
-      // If not connected successful
-      this.client.on('error', (err) => {
-	console.log('Redis connection error:', err);
-	reject(false);
-      });
-    });
+  /**
+   * Wait until Redis is ready (connected)
+   */
+  async waitForConnection() {
+    await this.connectionPromise;
   }
 
   /**
    * Checks if connection is successful.
    */
   async isAlive() {
-    return await this.connectPromise;
+    await this.waitForConnection();
+    return this.client.isReady;
   }
 
   /**
@@ -37,12 +47,7 @@ class RedisClient {
    */
   async set(key, value, duration) {
     try {
-      const result = await new Promise((resolve, reject) => {
-        this.client.set(key, value, 'EX', duration, (err, reply) => {
-          if (err) reject(err);
-          else resolve(reply);
-        });
-      });
+      const result = await this.client.set(key, value, { 'EX': duration });
       return result;
     } catch(err) {
       return null;
@@ -54,12 +59,7 @@ class RedisClient {
    */
   async get(key) {
     try {
-      const value = await new Promise((resolve, reject) => {
-        this.client.get(key, (err, result) => {
-          if (err) reject(err);
-          else resolve(result);
-        });
-      });
+      const value = await this.client.get(key);
       return value;
     } catch (err) {
       return null;
@@ -68,12 +68,7 @@ class RedisClient {
 
   async del(key) {
     try {
-      const result = await new Promise((resolve, reject) => {
-        this.client.del(key, (err, reply) => {
-          if (err) reject(err);
-          else resolve(reply);
-        });
-      });
+      const result = await this.client.del(key);
       return result;
     } catch (error) {
       return null;
