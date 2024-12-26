@@ -3,8 +3,8 @@
  * The class is used to create a DB instance for the LuDa chat application.
  * CRUD methods are also defined to allow easy access and reytrieval of data from the database.
  */
-import mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
+const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
 
 class DBClient {
   /**
@@ -24,8 +24,14 @@ class DBClient {
    */
   async _connect() {
     try {
-      // Handle tests: In memory mockup db
-      if (this.useInMemory) {
+      // Get database type
+      const dbType = process.env.DB_TYPE || 'default';
+
+      // Switch between databases
+      if (this.uri) {
+        // Use the custom uri passed in (from the test)
+        this.uri = this.uri;
+      } else if (dbType === 'testDB') {
         const memoryServer = await MongoMemoryServer.create();
         this.uri = memoryServer.getUri();
       } else {
@@ -42,6 +48,7 @@ class DBClient {
     } catch (error) {
       console.error('Error connecting to MongoDB:', error.message);
       this.connected = false;
+      throw error;
     }
   }
 
@@ -78,4 +85,4 @@ class DBClient {
 
 // Export a singleton instance of DBClient
 const dbClient = new DBClient();
-export { dbClient, mongoose };
+module.exports = { dbClient, mongoose };
