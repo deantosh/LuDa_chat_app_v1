@@ -1,7 +1,7 @@
 /*
  * Module defines class RedisClient to be used in session management.
  */
-import { createClient } from 'redis';
+const { createClient } = require('redis');
 
 class RedisClient {
   /**
@@ -78,4 +78,4 @@ class RedisClient {
 
 // Create and export an instance of RedisClient
 const redisClient = new RedisClient();
-export default redisClient;
+module.exports = redisClient;

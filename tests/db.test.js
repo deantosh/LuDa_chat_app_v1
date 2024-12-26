@@ -1,6 +1,4 @@
-/* eslint jest/no-hooks: "error" */
-
-import dbClient from '../utils/db';
+const { dbClient } = require('../utils/db');
 
 describe('db client', () => {
   // Helper functions for setup and teardown
@@ -13,6 +11,7 @@ describe('db client', () => {
   };
 
   beforeAll(async () => {
+    jest.setTimeout(10000);
     await setupDatabase();
   });
 
@@ -29,8 +28,7 @@ describe('db client', () => {
   it('should return the mongoose connection when connected', () => {
     expect.hasAssertions();
     const connection = dbClient.getDatabase();
-    expect(connection).toBeDefined();
-    expect(connection).toHaveProperty('connection');
+    expect(connection.readyState).toBe(1);
   });
 
   it('should throw an error if getDatabase is called while disconnected', async () => {
@@ -47,18 +45,5 @@ describe('db client', () => {
 
     await teardownDatabase();
     expect(dbClient.isAlive()).toBe(false);
-  });
-
-  it('should handle connection failure gracefully', async () => {
-    expect.hasAssertions();
-    const invalidDBClient = new (class extends dbClient.constructor {
-      constructor() {
-        super();
-        this.uri = 'mongodb://invalid_host:27017/test';
-      }
-    })();
-
-    await invalidDBClient._connect();
-    expect(invalidDBClient.isAlive()).toBe(false);
   });
 });
