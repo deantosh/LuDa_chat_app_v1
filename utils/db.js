@@ -12,11 +12,10 @@ class DBClient {
    */
   constructor({ useInMemory = false } = {}) {
     this.useInMemory = useInMemory;
-    this.options = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    };
+    // Flag: tracks connection status
     this.connected = false;
+    this.uri = null;
+    this.connectionPromise = this.initialize();
   }
 
   /**
@@ -27,11 +26,8 @@ class DBClient {
       // Get database type
       const dbType = process.env.DB_TYPE || 'default';
 
-      // Switch between databases
-      if (this.uri) {
-        // Use the custom uri passed in (from the test)
-        this.uri = this.uri;
-      } else if (dbType === 'testDB') {
+      // Switch between databases on test and development
+      if (dbType === 'testDB') {
         const memoryServer = await MongoMemoryServer.create();
         this.uri = memoryServer.getUri();
       } else {
@@ -42,7 +38,7 @@ class DBClient {
         this.uri = `mongodb://${dbHost}:${dbPort}/${dbName}`;
       }
 
-      await mongoose.connect(this.uri, this.options);
+      await mongoose.connect(this.uri);
       this.connected = true;
       console.log('Connected to MongoDB...');
     } catch (error) {
@@ -52,11 +48,28 @@ class DBClient {
     }
   }
 
+  // Initialize connection and store the promise
+  async initialize() {
+    if (this.connectionPromise){
+      await this.connectionPromise;
+      return;
+    }
+    this.connectionPromise = await this._connect();
+  }
+
+  // Wait until the connection is ready
+  async waitForConnection() {
+    if (this.connectionPromise) {
+      await this.connectionPromise; // Ensure connection is complete
+    }
+  }
+
   /**
    * Check for db connection status
    * Returns true (success) or false (fails).
    */
-  isAlive() {
+  async isAlive() {
+    await this.waitForConnection();
     return this.connected;
   }
 
