@@ -2,7 +2,7 @@
  * Module defines a test for redis.js.
  * Tests the in-memory store used for application session management.
  */
-import redisClient from '../utils/redis';
+const redisClient = require('../utils/redis');
 
 describe('redis Client Tests', () => {
   describe('isAlive()', () => {

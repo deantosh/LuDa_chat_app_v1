@@ -11,6 +11,9 @@ class RedisClient {
     // Start redis connection
     this.client = createClient({
       url: 'redis://127.0.0.1:6379',
+      socket: {
+        connectTimeout: 10000, // 10 seconds
+      },
     });
 
     // Flag: track connection status

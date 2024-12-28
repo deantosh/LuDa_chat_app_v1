@@ -30,11 +30,6 @@
     "uuid": "^8.2.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.0",
-    "@babel/core": "^7.8.0",
-    "@babel/node": "^7.8.0",
-    "@babel/preset-env": "^7.8.2",
-    "@babel/register": "^7.8.0",
     "@typescript-eslint/eslint-plugin": "^5.59.9",
     "@typescript-eslint/parser": "^5.59.9",
     "chai": "^4.2.0",
