@@ -1,7 +1,7 @@
 /**
  * Module defines BaseModel for all other models.
  */
-import { mongoose } from '../utils/db';
+const { mongoose } = require('../utils/db');
 
 const baseSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
@@ -18,49 +18,44 @@ baseSchema.methods.toJSON = function toJSON() {
 };
 
 // Update the updatedAt field when document is updated.
-baseSchema.pre('save', (next) => {
+baseSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
 /**
- * Static CRUD metsthods
+ * Static CRUD methods
  */
 
-// CREATE: Adds a new document to the collection
-baseSchema.statics.createDoc = async (data) => {
-  try {
-    const doc = await this.create(data);
-    return doc;
-  } catch (error) {
-    throw new Error(`Error creating document: ${error.message}`);
-  }
+// CREATE: Adds and saves new document to the collection
+baseSchema.statics.createDoc = async function (data) {
+  return this.create(data);
 };
 
 // READ: Finds documents using arbitrary query parameters
-baseSchema.statics.findDocs = async (query = {}, options = {}) => {
+baseSchema.statics.findDocs = async function (query = {}, options = {}) {
   try {
     // Paginate results
     const { limit = 10, skip = 0 } = options;
-    const docs = await this.find(query).limit(limit).skip(skip).exec();
+    const docs = await this.find(query).limit(limit).skip(skip);
     return docs;
   } catch (error) {
     throw new Error(`Error finding documents: ${error.message}`);
   }
 };
 
-// READ: Finds a single document using a query
-baseSchema.statics.findOneDoc = async (query, projection = null) => {
+// READ: Finds a single document using a query -- return queryObject
+baseSchema.statics.findOneDoc = function (query, projection = null) {
   try {
-    const doc = await this.findOne(query, projection).exec();
-    return doc;
+    // Get the query object that supports chaining
+    return this.findOne(query, projection);
   } catch (error) {
     throw new Error(`Error finding document: ${error.message}`);
   }
 };
 
 // UPDATE: Updates a document in the collection
-baseSchema.statics.updateDoc = async (query, updateData) => {
+baseSchema.statics.updateDoc = async function (query, updateData) {
   try {
     const options = { new: true }; // Return the updated document
     const updatedDoc = await this.findOneAndUpdate(query, updateData, options);
@@ -74,7 +69,7 @@ baseSchema.statics.updateDoc = async (query, updateData) => {
 };
 
 // DELETE: Deletes a document from the collection
-baseSchema.statics.deleteDoc = async (query) => {
+baseSchema.statics.deleteDoc = async function (query) {
   try {
     const deletedDoc = await this.findOneAndDelete(query);
     if (!deletedDoc) {
@@ -87,4 +82,4 @@ baseSchema.statics.deleteDoc = async (query) => {
 };
 
 // Export
-export default baseSchema;
+module.exports = baseSchema;

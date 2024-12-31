@@ -23,12 +23,23 @@ class DBClient {
    */
   async _connect() {
     try {
-      // Get database type
-      const dbType = process.env.DB_TYPE || 'default';
+      // Get Environment type
+      const envType = process.env.ENV_TYPE || 'default';
 
       // Switch between databases on test and development
-      if (dbType === 'testDB') {
-        const memoryServer = await MongoMemoryServer.create();
+      if (envType === 'test') {
+	console.log('Starting in-memory MongoDB server...');
+        const memoryServer = await MongoMemoryServer.create({
+          instance: {
+            port: 27017,
+            dbName: 'chat_app_test',
+          },
+          binary: {
+            version: '6.0.19',
+          },
+          autoStart: true,
+	});
+	await memoryServer.ensureInstance();
         this.uri = memoryServer.getUri();
       } else {
         // Handle: mongodb
