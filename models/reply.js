@@ -1,8 +1,8 @@
 /**
  * Module defines Reply model
  */
-import { mongoose } from '../utils/db';
-import baseSchema from './base_model';
+const { mongoose } = require('../utils/db');
+const baseSchema = require('./base_model');
 
 const replySchema = new mongoose.Schema({
   messageId: {
@@ -41,4 +41,4 @@ replySchema.add(baseSchema);
 
 // Register and export Reply model
 const Reply = mongoose.model('Reply', replySchema);
-export default Reply;
+module.exports = Reply;

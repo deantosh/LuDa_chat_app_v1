@@ -2,8 +2,8 @@
  * Module defines room model.
  * Room model contains the application chat room details.
  */
-import { mongoose } from '../utils/db';
-import baseSchema from './base_model';
+const { mongoose } = require('../utils/db');
+const baseSchema = require('./base_model');
 
 const roomSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -18,4 +18,4 @@ roomSchema.add(baseSchema);
 
 // Register Room model and export object
 const Room = mongoose.model('Room', roomSchema);
-export default Room;
+module.exports = Room;
