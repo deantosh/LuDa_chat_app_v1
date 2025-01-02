@@ -1,7 +1,10 @@
-import Room from '../models/room';
-import Reply from '../models/reply';
-import Message from '../models/message';
-import Reaction from '../models/reaction';
+/**
+ * Module defines App Message management.
+ */
+const Room = require('../models/room');
+const Reply = require('../models/reply');
+const Message = require('../models/message');
+const Reaction = require('../models/reaction');
 
 class MessageController {
   // Send Message - POST /rooms/:room_id/messages
@@ -153,4 +156,5 @@ class MessageController {
   }
 }
 
-export default MessageController;
+// Export
+module.exports = MessageController;
