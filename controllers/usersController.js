@@ -47,7 +47,7 @@ class UsersController {
 
   // Get the current user based on token
   static async getMe(req, res) {
-    const userToken = req.headers['x-token'];
+    const userToken = req.cookies.token;
     if (!userToken) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
@@ -74,6 +74,51 @@ class UsersController {
       });
     } catch (error) {
       console.error('Error retrieving user:', error.message);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  // Get dashboard info for the current user
+  static async getDashboardInfo(req, res) {
+    const userToken = req.cookies.token; // Retrieve the token from cookies
+
+    if (!userToken) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    try {
+      // Retrieve the user ID from Redis
+      const key = `auth_${userToken}`;
+      const userId = await redisClient.get(key);
+
+      if (!userId) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      // Find the user by ID using Mongoose
+	const user = await User.findOneDoc({ _id: userId });
+
+      if (!user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      // Retrieve the list of rooms where the user is a member
+      const rooms = await Room.findDocs({ members: user._id });
+
+      // Retrieve unread messages for the user and convert it to a dictionary
+      const unreadMessagesArray = await UnreadMessage.findDocs({ userId: user._id }).select('roomId unreadCount');
+      const unreadMessages = unreadMessagesArray.reduce((acc, msg) => {
+        acc[msg.roomId.toString()] = msg.unreadCount;
+        return acc;
+      }, {});
+
+      // Return the dashboard info
+      return res.status(200).json({
+        rooms,
+        unreadMessages,
+      });
+    } catch (error) {
+      console.error('Error retrieving dashboard info:', error.message);
       return res.status(500).json({ error: 'Internal server error' });
     }
   }

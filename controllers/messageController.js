@@ -32,6 +32,22 @@ class MessageController {
         attachments,
       });
 
+      // Increment unread message count for other users in the room (excluding sender)
+      const usersInRoom = await Room.find({ _id: room_id }).populate('users'); // Assuming your Room model has a 'users' field
+      const bulkOps = usersInRoom[0].users
+        .filter(user => user._id.toString() !== senderId.toString()) // Exclude sender from unread messages
+        .map(user => ({
+          updateOne: {
+          filter: { roomId: room_id, userId: user._id },
+          update: { $inc: { unreadCount: 1 } },
+          upsert: true
+        }
+      }));
+
+      // Perform bulk operation to update unread counts
+      if (bulkOps.length > 0) {
+        await UnreadMessage.bulkWrite(bulkOps);
+      }
       res.status(201).json({ message: 'Message sent successfully', data: message });
     } catch (error) {
       res.status(500).json({ error: `Failed to send message: ${error.message}` });
