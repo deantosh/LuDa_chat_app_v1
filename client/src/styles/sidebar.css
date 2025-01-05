@@ -1,0 +1,67 @@
+/* Sidebar Section */
+.sidebar {
+  width: 25%; /* 25% of the screen width */
+  background-color: #2c3e50; /* Dark background for sidebar */
+  color: #ecf0f1; /* Light text color */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+.sidebar h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  text-align: center;
+  color: #ffffff;
+}
+
+.sidebar ul {
+  list-style: none; /* Remove bullet points */
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar ul li {
+  margin: 10px 0;
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+  color: #ecf0f1;
+  padding: 10px;
+  display: block;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar ul li a:hover {
+  background-color: #34495e; /* Highlight on hover */
+}
+
+.badge {
+  background-color: #e74c3c; /* Red badge for unread messages */
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  margin-left: 10px;
+}
+
+/* Sidebar Action Buttons */
+.sidebar button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background-color: #3498db; /* Blue buttons */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar button:hover {
+  background-color: #2980b9; /* Darker blue on hover */
+}
