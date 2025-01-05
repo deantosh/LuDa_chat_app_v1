@@ -1,0 +1,7 @@
+/* General Dashboard Layout */
+.dashboard {
+  display: flex; /* Align sidebar and chat side by side */
+  height: 100vh; /* Full viewport height */
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+}
