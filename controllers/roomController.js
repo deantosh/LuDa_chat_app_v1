@@ -54,6 +54,12 @@ class RoomController {
         return res.status(404).json({ error: 'User not found' });
       }
 
+      // Reset unread messages
+      const unreadMessages = await UnreadMessage.findOne({ roomId: room._id, userId: user._id });
+      if (unreadMessages) {
+        unreadMessages.unreadCount = 0;  // Reset unread messages
+        await unreadMessages.save();
+      }
       // Add user to the room's members if not already present
       if (!room.members.includes(user_id)) {
         room.members.push(user_id);
