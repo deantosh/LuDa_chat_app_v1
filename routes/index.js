@@ -13,6 +13,7 @@ router.get('/status', AppController.getStatus);
 // User Management
 router.post('/users/register', UsersController.postNew);
 router.get('/users/me', UsersController.getMe);
+router.get('/users/dashboard', UserController.getDashboardInfo);
 
 // Auth Management
 router.get('/users/login', AuthController.getConnect);
