@@ -1,0 +1,26 @@
+/* message.css */
+
+/* Style for the entire message container */
+.message {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  background-color: #f1f1f1;
+  border: 1px solid #ddd;
+  max-width: 80%; /* Messages won't span the full width */
+  word-wrap: break-word; /* Ensure long messages don't overflow */
+}
+
+/* Styling for the sender's name */
+.message p strong {
+  color: #007bff;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+/* Styling for the message content */
+.message p {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
