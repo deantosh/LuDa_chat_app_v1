@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Sidebar from '../components/sidebar';
 import Header from '../components/header';
+import '../styles/room.css';
 
 const RoomCreation = ({ onRoomCreated }) => {
   const [roomName, setRoomName] = useState('');

@@ -3,6 +3,7 @@ import axios from 'axios';
 import Sidebar from '../components/sidebar';
 import Header from '../components/header';
 import Chat from '../components/chat';
+import '../styles/dashboard.css';
 
 const Dashboard = () => {
   const [user, setUser] = useState("");
