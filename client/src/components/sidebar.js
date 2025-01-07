@@ -1,5 +1,6 @@
-const React = require('react');
-const { Link } = require('react-router-dom');
+import React from 'react';
+import { Link } from 'react-router-dom';
+import '../styles/sidebar.css';
 
 const Sidebar = ({ rooms, unreadMessages, setSelectedRoom }) => {
   return (
@@ -34,4 +35,4 @@ const Sidebar = ({ rooms, unreadMessages, setSelectedRoom }) => {
 };
 
 // Export sidebar component
-module.exports = Sidebar;
+export default Sidebar;

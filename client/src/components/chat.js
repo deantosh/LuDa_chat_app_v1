@@ -1,7 +1,7 @@
-const React = require('react');
-const { useEffect, useState } = React;
-const axios = require('axios');
-const MessageComponent = require('./MessageComponent');
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import MessageComponent from './MessageComponent';
+import '../styles/chat.css'
 
 const Chat = ({ roomId }) => {
   const [messages, setMessages] = useState([]); // State for storing messages
