@@ -114,6 +114,7 @@ class UsersController {
 
       // Return the dashboard info
       return res.status(200).json({
+        user,
         rooms,
         unreadMessages,
       });
