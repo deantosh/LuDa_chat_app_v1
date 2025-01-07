@@ -79,4 +79,4 @@ const RoomCreation = ({ onRoomCreated }) => {
 };
 
 // Export room component
-module.exports = RoomCreation;
+export default RoomCreation
