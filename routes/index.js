@@ -30,6 +30,7 @@ router.post('/rooms/:room_id/messages/:message_id/reactions', MessageController.
 router.post('/rooms', RoomController.createRoom);
 router.post('/rooms/:room_id/users/:user_id/join', RoomController.joinRoom);
 router.delete('/rooms/:room_id/users/:user_id/exit', RoomController.exitRooms);
+router.get('/rooms', RoomController.getAllRooms);
 
 // Export router
 module.exports = router;

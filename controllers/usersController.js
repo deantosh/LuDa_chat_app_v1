@@ -123,6 +123,19 @@ class UsersController {
       return res.status(500).json({ error: 'Internal server error' });
     }
   }
+
+  // Fetch All Rooms - GET /rooms
+  static async getAllRooms(req, res) {
+    try {
+      const rooms = await Room.findDocs({});
+      if (!rooms || rooms.length === 0) {
+        return res.status(404).json({ message: 'No rooms found' });
+      }
+      res.status(200).json({ rooms });
+    } catch (error) {
+      res.status(500).json({ error: `Failed to fetch rooms: ${error.message}` });
+    }
+  }
 }
 
 // Export
