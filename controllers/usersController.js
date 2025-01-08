@@ -81,6 +81,7 @@ class UsersController {
   // Get dashboard info for the current user
   static async getDashboardInfo(req, res) {
     const userToken = req.cookies.token; // Retrieve the token from cookies
+    console.log('OuruserToken', userToken)
 
     if (!userToken) {
       return res.status(401).json({ error: 'Unauthorized' });

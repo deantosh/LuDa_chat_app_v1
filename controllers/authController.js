@@ -46,6 +46,14 @@ class AuthController {
     // Store key in Redis
     try {
       await redisClient.set(authToken, user._id.toString(), 24 * 60 * 60); // TTL: 24 hours
+
+      // Store the token in a cookie with HttpOnly and Secure flags
+      res.cookie('token', authToken, {
+        httpOnly: true, // Cannot be accessed by JavaScript on the client side
+        secure: false, 
+        maxAge: 24 * 60 * 60 * 1000, // Cookie expires in 24 hours
+        sameSite: 'None', // CSRF protection
+      });
       return res.status(200).json({ token });
     } catch (error) {
       return res.status(500).json({ error: 'Internal Server Error' });

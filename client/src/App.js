@@ -4,16 +4,14 @@ import LoginOrSignup from './login/page';
 import Dashboard from './dashboard/page';
 
 function App() {
-  return <div>
-    ehlejld
-  </div>
+
   return (
     <BrowserRouter>
       <Routes>
-        {/* <Route path="/" element={<LoginOrSignup />} /> */}
-        {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+        <Route path="/" element={<LoginOrSignup />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         {/* Redirect to login if no match */}
-        {/* <Route path="*" element={<Navigate to="/" />} /> */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
   );

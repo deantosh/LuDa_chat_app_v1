@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import MessageComponent from './MessageComponent';
+import MessageComponent from './message'
 import '../styles/chat.css'
 
 const Chat = ({ roomId }) => {
@@ -58,4 +58,4 @@ const Chat = ({ roomId }) => {
 };
 
 // Export chat component
-module.exports = Chat;
+export default Chat;
