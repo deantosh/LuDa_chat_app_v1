@@ -1,91 +1,91 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Sidebar from '../components/sidebar';
-import Header from '../components/header';
-import '../styles/room.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Sidebar from "../components/sidebar";
+import Header from "../components/header";
+import "../styles/room.css";
 
 const RoomCreation = ({ onRoomCreated }) => {
-  const [roomName, setRoomName] = useState('');
-  const [description, setDescription] = useState('');
+  const [roomName, setRoomName] = useState("");
+  const [description, setDescription] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
-  const [userId, setUserId] = useState(null);  // To store the logged-in user ID
+  const [user, setUser] = useState(""); // To store the logged-in user ID
 
   // Fetch the current user details
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:5000/users/me', {
-	  withCredentials: true,
+        const response = await axios.get("http://localhost:5000/users/me", {
+          withCredentials: true,
         });
-        setUserId(response.data.id);  // Set the logged-in user ID
+        setUser(response.data.user); // Set the logged-in user ID
       } catch (error) {
-        console.error('Failed to fetch user:', error);
-        alert('Failed to fetch user details.');
+        console.error("Failed to fetch user:", error);
+        alert("Failed to fetch user details.");
       }
     };
     fetchUser();
-  }, []);  // Runs only once on component mount
+  }, []); // Runs only once on component mount
 
   const handleRoomCreation = async () => {
-    if (roomName.trim() && userId) {
+    if (roomName.trim() && user._id) {
       try {
-        const response = await axios.post('http://localhost:5000/rooms', {
+        const response = await axios.post("http://localhost:5000/rooms", {
           name: roomName,
           description,
           isPrivate,
-          createdBy: userId,
-          members: [userId]
+          createdBy: user._id,
+          members: [user._id],
         });
 
         // Pass the new room to the parent component to update the room list
-        onRoomCreated(response.data);
+        onRoomCreated = response.data;
 
         // Reset form fields
-        setRoomName('');
-        setDescription('');
+        setRoomName("");
+        setDescription("");
         setIsPrivate(false);
-        alert('Room created successfully!');
+        alert("Room created successfully!");
       } catch (error) {
         console.error(error);
-        alert('Failed to create room.');
+        alert("Failed to create room.");
       }
     } else {
-      alert('Room name and user data are required!');
+      alert("Room name and user data are required!");
     }
   };
 
-    return (
-    {/*Header component*/}
-    <Header user={user} />
-    {/*Sidebar component*/}
-    <Sidebar
-      rooms={rooms}
-      unreadMessages={unreadMessages}
-      setSelectedRoom={setSelectedRoom}
-    />
-    <div className="create-room">
-      <h2>Create New Room</h2>
-      <input
-        type="text"
-        value={roomName}
-        onChange={(e) => setRoomName(e.target.value)}
-        placeholder="Room Name"
-      />
-      <textarea
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        placeholder="Room Description"
-      />
-      <label>
-        Private:
+  return (
+    <>
+      {/*Header component*/}
+      <Header />
+      <div className="create-room">
+      {/*Sidebar component*/}
+      <Sidebar />
+        <div className="room-creation-form">
+        <h2>Create New Room</h2>
         <input
-          type="checkbox"
-          checked={isPrivate}
-          onChange={() => setIsPrivate(!isPrivate)}
+          type="text"
+          value={roomName}
+          onChange={(e) => setRoomName(e.target.value)}
+          placeholder="Room Name"
         />
-      </label>
-      <button onClick={handleRoomCreation}>Create Room</button>
-    </div>
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Room Description"
+        />
+        <label>
+          Private:
+          <input
+            type="checkbox"
+            checked={isPrivate}
+            onChange={() => setIsPrivate(!isPrivate)}
+          />
+        </label>
+        <button onClick={handleRoomCreation}>Create Room</button>
+        </div>
+      </div>
+    </>
   );
 };
 
