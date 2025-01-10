@@ -23,7 +23,7 @@ const Chat = ({ roomId }) => {
   // Function to handle sending a new message
   const handleSendMessage = () => {
     if (newMessage.trim()) {
-      axios.post(`http://localhost:5000/rooms/${roomId}/messages`, { text: newMessage })
+      axios.post(`http://localhost:5000/rooms/${roomId}/messages`, { text: newMessage   }, { withCredentials: true })
         .then(({ data }) => {
           // Add the new message to the messages list
           setMessages((prevMessages) => [...prevMessages, data.message]);
