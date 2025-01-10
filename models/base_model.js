@@ -33,15 +33,27 @@ baseSchema.statics.createDoc = async function (data) {
 };
 
 // READ: Finds documents using arbitrary query parameters
-baseSchema.statics.findDocs = async function (query = {}, options = {}) {
-  try {
-    // Paginate results
-    const { limit = 10, skip = 0 } = options;
-    const docs = await this.find(query).limit(limit).skip(skip);
-    return docs;
-  } catch (error) {
-    throw new Error(`Error finding documents: ${error.message}`);
-  }
+// baseSchema.statics.findDocs = async function (query = {}, options = {}) {
+//   try {
+//     // Paginate results
+//     const { limit = 10, skip = 0 } = options;
+//     const docs = await this.find(query).limit(limit).skip(skip);
+//     return this.find(query).limit(limit).skip(skip);
+//     return docs;
+//   } catch (error) {
+//     throw new Error(`Error finding documents: ${error.message}`);
+//   }
+// };
+
+// Refactor findDocs to return the Mongoose query object instead of resolving it, as mentioned earlier:
+baseSchema.statics.findDocs = function (query = {}, options = {}, fields = null) {
+  const { limit = 10, skip = 0 } = options; // Extract pagination options
+
+  // Return the query object to allow chaining
+  return this.find(query)
+    .select(fields) // Select specific fields if provided
+    .limit(limit)
+    .skip(skip);
 };
 
 // READ: Finds a single document using a query -- return queryObject
