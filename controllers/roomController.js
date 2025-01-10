@@ -18,7 +18,7 @@ class RoomController {
       }
 
       // Destructure only after validation
-      const { name, description, isPrivate, createdBy } = req.body;
+      const { name, description, isPrivate, createdBy, members } = req.body;
 
       // Validate that `createdBy` is a valid User
       const user = await User.findOneDoc({ _id: createdBy });
@@ -32,6 +32,7 @@ class RoomController {
         description,
         isPrivate,
         createdBy,
+        members,
       });
       res.status(201).json({ message: 'Room created successfully', room });
     } catch (error) {
