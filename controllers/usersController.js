@@ -1,6 +1,8 @@
-const sha1 = require('sha1');
-const redisClient = require('../utils/redis');
-const User = require('../models/user');
+const Room = require("../models/room");
+const UnreadMessage = require("../models/unread_messages");
+const sha1 = require("sha1");
+const redisClient = require("../utils/redis");
+const User = require("../models/user");
 
 class UsersController {
   // Create a new user
@@ -10,20 +12,20 @@ class UsersController {
     const username = req.body?.username;
 
     if (!email) {
-      return res.status(400).json({ error: 'Missing email' });
+      return res.status(400).json({ error: "Missing email" });
     }
     if (!password) {
-      return res.status(400).json({ error: 'Missing password' });
+      return res.status(400).json({ error: "Missing password" });
     }
     if (!username) {
-      return res.status(400).json({ error: 'Missing username' });
+      return res.status(400).json({ error: "Missing username" });
     }
 
     try {
       // Check if the user already exists
       const existingUser = await User.findOne({ email });
       if (existingUser) {
-        return res.status(400).json({ error: 'Already exist' });
+        return res.status(400).json({ error: "Already exist" });
       }
 
       // Create a new user instance
@@ -40,74 +42,74 @@ class UsersController {
         id: user._id.toString(),
       });
     } catch (error) {
-      console.error('Error creating user:', error.message);
-      return res.status(500).json({ error: 'Internal server error' });
+      console.error("Error creating user:", error.message);
+      return res.status(500).json({ error: "Internal server error" });
     }
   }
 
   // Get the current user based on token
   static async getMe(req, res) {
     const userToken = req.cookies.token;
+
     if (!userToken) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
     try {
       // Retrieve the user ID from Redis
-      const key = `auth_${userToken}`;
-      const userId = await redisClient.get(key);
+      const userId = await redisClient.get(userToken);
 
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ error: "Unauthorized" });
       }
 
       // Find the user by ID using Mongoose
-      const user = await User.findById(userId, 'email');
+      const user = await User.findById(userId, "email");
       if (!user) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ error: "Unauthorized" });
       }
 
       // Return the user's email and ID
       return res.status(200).json({
-        id: user._id.toString(),
-        email: user.email,
+        user,
       });
     } catch (error) {
-      console.error('Error retrieving user:', error.message);
-      return res.status(500).json({ error: 'Internal server error' });
+      console.error("Error retrieving user:", error.message);
+      return res.status(500).json({ error: "Internal server error" });
     }
   }
 
   // Get dashboard info for the current user
   static async getDashboardInfo(req, res) {
     const userToken = req.cookies.token; // Retrieve the token from cookies
-    console.log('OuruserToken', userToken)
+    console.log("our Token", userToken);
 
     if (!userToken) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: "Unauthorized 0" });
     }
 
     try {
       // Retrieve the user ID from Redis
-      const key = `auth_${userToken}`;
-      const userId = await redisClient.get(key);
+      const userId = await redisClient.get(userToken);
 
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ error: "Unauthorized 1" });
       }
 
       // Find the user by ID using Mongoose
-	const user = await User.findOneDoc({ _id: userId });
+      const user = await User.findOneDoc({ _id: userId });
 
       if (!user) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ error: "Unauthorized 2" });
       }
 
       // Retrieve the list of rooms where the user is a member
       const rooms = await Room.findDocs({ members: user._id });
 
       // Retrieve unread messages for the user and convert it to a dictionary
-      const unreadMessagesArray = await UnreadMessage.findDocs({ userId: user._id }).select('roomId unreadCount');
+      const unreadMessagesArray = await UnreadMessage.findDocs({
+        userId: user._id,
+      }).select("roomId unreadCount");
       const unreadMessages = unreadMessagesArray.reduce((acc, msg) => {
         acc[msg.roomId.toString()] = msg.unreadCount;
         return acc;
@@ -120,8 +122,8 @@ class UsersController {
         unreadMessages,
       });
     } catch (error) {
-      console.error('Error retrieving dashboard info:', error.message);
-      return res.status(500).json({ error: 'Internal server error' });
+      console.error("Error retrieving dashboard info:", error.message);
+      return res.status(500).json({ error: "Internal server error" });
     }
   }
 }
