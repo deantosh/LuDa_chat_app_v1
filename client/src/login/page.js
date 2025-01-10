@@ -30,6 +30,7 @@ const LoginForm = ({ toggleForm }) => {
       const authHeader = "Basic " + btoa(`${email}:${password}`);
       const response = await fetch("http://localhost:5000/users/login", {
         method: "POST",
+        credentials: 'include',
         headers: {
           "Content-Type": "application/json",
           Authorization: authHeader,
@@ -39,7 +40,7 @@ const LoginForm = ({ toggleForm }) => {
       if (response.ok) {
         const data = await response.json();
         console.log("Login successful:", data);
-        navigate("/dashboard");
+        navigate('/dashboard');
       } else {
         console.error("Login failed:", await response.text());
       }
