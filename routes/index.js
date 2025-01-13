@@ -29,6 +29,7 @@ router.post('/rooms/:room_id/messages/:message_id/reactions', MessageController.
 // Room Management
 router.post('/rooms', RoomController.createRoom);
 router.post('/rooms/:room_id/users/:user_id/join', RoomController.joinRoom);
+router.get('/rooms', RoomController.getAllRooms);
 router.delete('/rooms/:room_id/users/:user_id/exit', RoomController.exitRoom);
 
 // Export router
