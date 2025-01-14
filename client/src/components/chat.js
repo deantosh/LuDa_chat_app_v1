@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import MessageComponent from './message';
 import '../styles/chat.css';
@@ -6,6 +6,7 @@ import '../styles/chat.css';
 const Chat = ({ user, selectedRoom }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const messagesEndRef = useRef(null);
 
   // Fetch messages for the selected room
   useEffect(() => {
@@ -19,6 +20,12 @@ const Chat = ({ user, selectedRoom }) => {
         });
     }
   }, [selectedRoom]);
+
+  // Scroll to the bottom every time messages are updated
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
 
   // Function to handle sending a new message
   const handleSendMessage = () => {
@@ -35,11 +42,15 @@ const Chat = ({ user, selectedRoom }) => {
 	{ withCredentials: true }
       )
       .then(({ data }) => {
+        console.log('Response from server:', data);
         // Add the new message to the messages list
-          setMessages((prevMessages) => [...prevMessages, data.messageData]);
+          setMessages((prevMessages) => [...prevMessages, data.message]);
       })
       .catch((error) => {
-        console.error('Error sending message:', error);
+          console.error('Error sending message:', error);
+	  if (error.response) {
+      console.log('Error response:', error.response.data);  // This will contain the error details from the server
+    }
       });
     }
   };
@@ -55,6 +66,8 @@ const Chat = ({ user, selectedRoom }) => {
             <MessageComponent key={message._id} message={message} />
           ))
 	)}
+        {/* This ensures the chat scrolls to the bottom*/}
+        <div ref={messagesEndRef} />
       </div>
 
       {/* Textarea for sending new messages */}
