@@ -1,7 +1,7 @@
 /* General Dashboard Layout */
 .dashboard {
   display: flex; 
-  height: 100vh; /* Full viewport height */
+  height: calc(100vh - 10vh); /* Full viewport height */
   font-family: Arial, sans-serif;
   background-color: #f5f5f5;
 }
