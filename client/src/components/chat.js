@@ -3,7 +3,7 @@ import axios from 'axios';
 import MessageComponent from './message'
 import '../styles/chat.css'
 
-const Chat = ({ roomId }) => {
+const Chat = ({ roomId, user }) => {
   const [messages, setMessages] = useState([]); // State for storing messages
   const [newMessage, setNewMessage] = useState(''); // State for storing the text of the new message
 
@@ -40,19 +40,22 @@ const Chat = ({ roomId }) => {
       {/* Messages list */}
       <div className="messages-list">
         {messages.map((message) => (
-          <MessageComponent key={message._id} message={message} />
+          <MessageComponent key={message._id} message={message} user={user} />
         ))}
       </div>
 
       {/* Textarea for sending new messages */}
-      <div className="message-input">
-        <textarea
-          placeholder="Type a message..."
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-        />
-        <button onClick={handleSendMessage}>Send</button>
-      </div>
+      {roomId && (
+        <div className="message-input">
+          <textarea
+            placeholder="Type a message..."
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+          />
+          <button onClick={handleSendMessage}>Send</button>
+        </div>
+      )}
+
     </div>
   );
 };
