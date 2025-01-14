@@ -64,7 +64,7 @@ class UsersController {
       }
 
       // Find the user by ID using Mongoose
-      const user = await User.findById(userId, "email");
+      const user = await User.findById(userId, "email username isOnline status avatar");
       if (!user) {
         return res.status(401).json({ error: "Unauthorized" });
       }
