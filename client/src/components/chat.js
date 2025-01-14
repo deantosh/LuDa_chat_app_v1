@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import MessageComponent from './message'
-import '../styles/chat.css'
+import MessageComponent from './message';
+import '../styles/chat.css';
 
 const Chat = ({ user, selectedRoom }) => {
   const [messages, setMessages] = useState([]); // State for storing messages
@@ -36,12 +36,16 @@ const Chat = ({ user, selectedRoom }) => {
   };
 
   return (
-    <div className="chat-container">
+    <div className="chat">
       {/* Messages list */}
       <div className="messages-list">
-        {messages.map((message) => (
-          <MessageComponent key={message._id} message={message} user={user} />
-        ))}
+	{messages.length === 0 ? (
+          <p>No messages</p>
+	) : (
+          messages.map((message) => (
+            <MessageComponent key={message._id} message={message} />
+          ))
+	)}
       </div>
 
       {/* Textarea for sending new messages */}

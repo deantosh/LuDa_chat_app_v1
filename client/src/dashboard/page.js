@@ -36,8 +36,8 @@ const Dashboard = () => {
       <div className="dashboard">
         {/*Sidebar component*/}
         <Sidebar onRoomSelect={onRoomSelect} />
-        {/*Chat component*/}
-          <div className="chat">
+          {/*Chat component*/}
+        <div class="chat-container">
 	  {selectedRoom ? (
             <Chat user={user} selectedRoom={selectedRoom} />
 	  ) : (

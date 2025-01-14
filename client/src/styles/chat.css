@@ -1,10 +1,10 @@
 /* Chat Section */
 .chat {
-  flex: 1; /* Allow the chat section to fill available space */
-  display: flex;
-  flex-direction: column;
-  background-color: #f9f9f9;
-  overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background-color: #f9f9f9;
+    overflow: hidden;
+    height: 100%;
 }
 
 .chat p {

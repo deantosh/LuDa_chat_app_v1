@@ -4,7 +4,7 @@ import '../styles/message.css';
 const MessageComponent = ({ message }) => {
   return (
     <div className="message">
-      <p><strong>{message.senderId.name}</strong>: {message.text}</p>
+      <p><strong>{message.senderId.username}</strong>: {message.text}</p>
     </div>
   );
 };
