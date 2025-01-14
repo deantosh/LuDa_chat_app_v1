@@ -7,6 +7,8 @@ import axios from "axios";
 
 const Dashboard = () => {
   const [user, setUser] = useState(""); // To store the logged-in user ID
+  const [selectedRoom, setSelectedRoom] = useState(null);
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -21,18 +23,26 @@ const Dashboard = () => {
     };
     fetchUser();
   }, []); // Runs only once on component mount
-    
+
+  // Function to set selectedRoom
+  const onRoomSelect = (roomId) => {
+    setSelectedRoom(roomId);
+  }
+
   return (
     <>
       {/*Header component*/}
       <Header user={user} />
       <div className="dashboard">
         {/*Sidebar component*/}
-        <Sidebar />
+        <Sidebar onRoomSelect={onRoomSelect} />
         {/*Chat component*/}
-        <div className="chat">
-          <Chat user={user} />
-          <p>Select a room to view messages.</p>
+          <div className="chat">
+	  {selectedRoom ? (
+            <Chat user={user} selectedRoom={selectedRoom} />
+	  ) : (
+            <p>Select a room to view messages.</p>
+	  )}
         </div>
       </div>
     </>

@@ -4,7 +4,7 @@ import '../styles/sidebar.css';
 import axios from "axios";
 
 
-const Sidebar = () => {
+const Sidebar = ({ onRoomSelect }) => {
   const [user, setUser] = useState("");
   const [rooms, setRooms] = useState([]);
   const [unreadMessages, setUnreadMessages] = useState({});
@@ -28,14 +28,14 @@ const Sidebar = () => {
       <ul>
         {rooms.map((room) => (
           <li key={room._id}>
-            <Link to="#" >
+	    <button onClick={() => onRoomSelect(room._id)}>
               {room.name}
               {unreadMessages[room._id] > 0 && (
                 <span className="badge">
                   {unreadMessages[room._id]}
                 </span>
               )}
-            </Link>
+            </button>
           </li>
         ))}
       </ul>

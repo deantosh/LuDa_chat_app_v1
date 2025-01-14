@@ -3,14 +3,14 @@ import axios from 'axios';
 import MessageComponent from './message'
 import '../styles/chat.css'
 
-const Chat = ({ roomId, user }) => {
+const Chat = ({ user, selectedRoom }) => {
   const [messages, setMessages] = useState([]); // State for storing messages
   const [newMessage, setNewMessage] = useState(''); // State for storing the text of the new message
 
   // Fetch messages for the selected room
   useEffect(() => {
-    if (roomId) {
-      axios.get(`http://localhost:5000/rooms/${roomId}/messages`)
+    if (selectedRoom) {
+      axios.get(`http://localhost:5000/rooms/${selectedRoom}/messages`)
         .then(({ data }) => {
           setMessages(data.messages);
         })
@@ -18,12 +18,12 @@ const Chat = ({ roomId, user }) => {
           console.error('Error fetching messages:', error);
         });
     }
-  }, [roomId]);
+  }, [selectedRoom]);
 
   // Function to handle sending a new message
   const handleSendMessage = () => {
     if (newMessage.trim()) {
-      axios.post(`http://localhost:5000/rooms/${roomId}/messages`, { text: newMessage   }, { withCredentials: true })
+      axios.post(`http://localhost:5000/rooms/${selectedRoom}/messages`, { text: newMessage   }, { withCredentials: true })
         .then(({ data }) => {
           // Add the new message to the messages list
           setMessages((prevMessages) => [...prevMessages, data.message]);
@@ -45,7 +45,7 @@ const Chat = ({ roomId, user }) => {
       </div>
 
       {/* Textarea for sending new messages */}
-      {roomId && (
+      {selectedRoom && (
         <div className="message-input">
           <textarea
             placeholder="Type a message..."
