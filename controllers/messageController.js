@@ -33,7 +33,7 @@ class MessageController {
       });
 
       // Increment unread message count for other users in the room (excluding sender)
-      const usersInRoom = await Room.find({ _id: room_id }).populate('users'); // Assuming your Room model has a 'users' field
+      const usersInRoom = await Room.findOneDoc({ _id: room_id }).populate('users'); // Assuming your Room model has a 'users' field
       const bulkOps = usersInRoom[0].users
         .filter(user => user._id.toString() !== senderId.toString()) // Exclude sender from unread messages
         .map(user => ({
@@ -48,7 +48,7 @@ class MessageController {
       if (bulkOps.length > 0) {
         await UnreadMessage.bulkWrite(bulkOps);
       }
-      res.status(201).json({ message: 'Message sent successfully', data: message });
+      res.status(201).json({ message: 'Message sent successfully', messageData: message });
     } catch (error) {
       res.status(500).json({ error: `Failed to send message: ${error.message}` });
     }
@@ -64,11 +64,11 @@ class MessageController {
         return res.status(404).json({ error: 'Room not found' });
       }
 
-      const messages = await Message.find({ roomId: room_id })
-        .populate('senderId', 'name') // populate sender info
+      const messages = await Message.findDocs({ roomId: room_id })
+        .populate('senderId', 'username') // populate sender info
         .populate({
           path: 'replies',
-          populate: { path: 'senderId', select: 'name' }, // populate replies' sender info
+          populate: { path: 'senderId', select: 'username' }, // populate replies' sender info
         })
         .populate({
           path: 'reactions',
@@ -125,7 +125,7 @@ class MessageController {
         return res.status(404).json({ error: 'Message not found' });
       }
 
-      const replies = await Reply.find({ messageId: message_id })
+      const replies = await Reply.findDocs({ messageId: message_id })
         .populate('senderId', 'name') // populate reply sender info
         .populate({
           path: 'reactions',

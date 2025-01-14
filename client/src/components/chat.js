@@ -4,8 +4,8 @@ import MessageComponent from './message';
 import '../styles/chat.css';
 
 const Chat = ({ user, selectedRoom }) => {
-  const [messages, setMessages] = useState([]); // State for storing messages
-  const [newMessage, setNewMessage] = useState(''); // State for storing the text of the new message
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
 
   // Fetch messages for the selected room
   useEffect(() => {
@@ -22,16 +22,25 @@ const Chat = ({ user, selectedRoom }) => {
 
   // Function to handle sending a new message
   const handleSendMessage = () => {
-    if (newMessage.trim()) {
-      axios.post(`http://localhost:5000/rooms/${selectedRoom}/messages`, { text: newMessage   }, { withCredentials: true })
-        .then(({ data }) => {
-          // Add the new message to the messages list
-          setMessages((prevMessages) => [...prevMessages, data.message]);
-          setNewMessage(''); // Clear the input field
-        })
-        .catch((error) => {
-          console.error('Error sending message:', error);
-        });
+    const tempMessage = newMessage;
+      setNewMessage(''); // Clear the input field
+    if (tempMessage.trim()) {
+      axios.post(
+        `http://localhost:5000/rooms/${selectedRoom}/messages`,
+	{
+            text: tempMessage,
+	    roomId: selectedRoom,
+	    senderId: user._id,
+	},
+	{ withCredentials: true }
+      )
+      .then(({ data }) => {
+        // Add the new message to the messages list
+          setMessages((prevMessages) => [...prevMessages, data.messageData]);
+      })
+      .catch((error) => {
+        console.error('Error sending message:', error);
+      });
     }
   };
 
