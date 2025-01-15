@@ -2,213 +2,162 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import "./UserSettings.css";
 
-const UserSettings = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    bio: "",
+const Settings = () => {
+  const [profile, setProfile] = useState({
+    name: "",
     email: "",
-    password: "",
+    bio: "",
+    profilePicture: "",
   });
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [activeTab, setActiveTab] = useState("Profile");
-  const [successMessage, setSuccessMessage] = useState("");
   const [preferences, setPreferences] = useState({
+    darkMode: false,
     notifications: true,
-    sound: true,
-    theme: "light",
   });
+  const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState("");
 
-  // Apply theme dynamically
+  // Fetch user profile from API
   useEffect(() => {
-    document.body.className = preferences.theme;
-  }, [preferences.theme]);
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/users/me");
+        const data = await response.json();
+        setProfile(data.profile);
+        setPreferences(data.preferences);
+        setLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch profile:", error);
+      }
+    };
+    fetchProfile();
+  }, []);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  // Handle profile updates
+  const handleSave = async () => {
+    try {
+      const response = await fetch("/api/user/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ profile, preferences }),
+      });
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setSelectedImage(file);
-      const reader = new FileReader();
-      reader.onload = () => setImagePreview(reader.result);
-      reader.readAsDataURL(file);
+      if (response.ok) {
+        setToast("Profile updated successfully!");
+      } else {
+        setToast("Failed to update profile.");
+      }
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+      setToast("An error occurred while saving.");
     }
+
+    // Clear the toast after a few seconds
+    setTimeout(() => setToast(""), 3000);
   };
 
-  const handlePreferenceChange = (name) => {
-    setPreferences((prev) => ({ ...prev, [name]: !prev[name] }));
+  // Handle preference toggles
+  const togglePreference = (key) => {
+    setPreferences((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setSuccessMessage("Settings saved successfully!");
-    setTimeout(() => setSuccessMessage(""), 3000);
-  };
-
-  const tabVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: { opacity: 1, x: 0 },
-  };
+  if (loading) return <div>Loading...</div>;
 
   return (
-    <motion.div
-      className="settings-container"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
+    <div className={`settings-container ${preferences.darkMode ? "dark" : "light"}`}>
       <header>
         <h1>User Settings</h1>
       </header>
 
       <div className="tabs">
-        {["Profile", "Account", "Preferences"].map((tab) => (
-          <motion.button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={activeTab === tab ? "active" : ""}
-            whileHover={{ scale: 1.1 }}
-          >
-            {tab}
-          </motion.button>
-        ))}
+        <button className="active">Profile</button>
+        <button>Preferences</button>
       </div>
 
-      <motion.div
-        key={activeTab}
-        initial="hidden"
-        animate="visible"
-        exit="hidden"
-        variants={tabVariants}
-        className="tab-content"
-      >
-        {activeTab === "Profile" && (
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Profile Picture</label>
-              <input type="file" accept="image/*" onChange={handleImageChange} />
-              {imagePreview && (
-                <motion.div
-                  className="image-preview"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <img src={imagePreview} alt="Profile Preview" />
-                </motion.div>
-              )}
-            </div>
+      <div className="tab-content">
+        <div className="form-group">
+          <label>Profile Picture</label>
+          <div className="image-preview">
+            <img src={profile.profilePicture || "/placeholder.jpg"} alt="Profile" />
+          </div>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                  setProfile((prev) => ({ ...prev, profilePicture: reader.result }));
+                };
+                reader.readAsDataURL(file);
+              }
+            }}
+          />
+        </div>
 
-            <div className="form-group">
-              <label>Username</label>
-              <input
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-                required
-                minLength="3"
-              />
-            </div>
+        <div className="form-group">
+          <label>Name</label>
+          <input
+            type="text"
+            value={profile.name}
+            onChange={(e) => setProfile((prev) => ({ ...prev, name: e.target.value }))}
+          />
+        </div>
 
-            <div className="form-group">
-              <label>Bio</label>
-              <textarea
-                name="bio"
-                rows="3"
-                value={formData.bio}
-                onChange={handleInputChange}
-                maxLength="160"
-              />
-            </div>
-          </form>
-        )}
+        <div className="form-group">
+          <label>Email</label>
+          <input
+            type="email"
+            value={profile.email}
+            onChange={(e) => setProfile((prev) => ({ ...prev, email: e.target.value }))}
+          />
+        </div>
 
-        {activeTab === "Account" && (
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
+        <div className="form-group">
+          <label>Bio</label>
+          <textarea
+            value={profile.bio}
+            onChange={(e) => setProfile((prev) => ({ ...prev, bio: e.target.value }))}
+          ></textarea>
+        </div>
 
-            <div className="form-group">
-              <label>Password</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                minLength="6"
-              />
-            </div>
-          </form>
-        )}
-
-        {activeTab === "Preferences" && (
-          <div className="preferences">
-            <div className="preference-item">
-              <label>Email Notifications</label>
-              <motion.div
-                className="toggle"
-                onClick={() => handlePreferenceChange("notifications")}
-                initial={{ scale: 1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <div
-                  className={`toggle-thumb ${
-                    preferences.notifications ? "on" : "off"
-                  }`}
-                />
-              </motion.div>
-            </div>
-
-            <div className="preference-item">
-              <label>Sound for New Messages</label>
-              <motion.div
-                className="toggle"
-                onClick={() => handlePreferenceChange("sound")}
-                initial={{ scale: 1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <div
-                  className={`toggle-thumb ${preferences.sound ? "on" : "off"}`}
-                />
-              </motion.div>
-            </div>
-
-            <div className="preference-item">
-              <label>Chat Theme</label>
-              <select
-                value={preferences.theme}
-                onChange={(e) =>
-                  setPreferences({ ...preferences, theme: e.target.value })
-                }
-              >
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-              </select>
+        <div className="preferences">
+          <div className="preference-item">
+            <span>Dark Mode</span>
+            <div
+              className={`toggle ${preferences.darkMode ? "on" : "off"}`}
+              onClick={() => togglePreference("darkMode")}
+            >
+              <div className={`toggle-thumb ${preferences.darkMode ? "on" : "off"}`} />
             </div>
           </div>
-        )}
-      </motion.div>
 
-      <button className="save-btn" onClick={handleSubmit}>
-        Save Settings
-      </button>
+          <div className="preference-item">
+            <span>Notifications</span>
+            <div
+              className={`toggle ${preferences.notifications ? "on" : "off"}`}
+              onClick={() => togglePreference("notifications")}
+            >
+              <div className={`toggle-thumb ${preferences.notifications ? "on" : "off"}`} />
+            </div>
+          </div>
+        </div>
 
-      {successMessage && <div className="toast">{successMessage}</div>}
-    </motion.div>
+        <motion.button
+          className="save-btn"
+          onClick={handleSave}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          Save Changes
+        </motion.button>
+
+        {toast && <div className="toast">{toast}</div>}
+      </div>
+    </div>
   );
 };
 
-export default UserSettings;
+export default Settings;
