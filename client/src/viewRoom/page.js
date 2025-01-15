@@ -14,11 +14,12 @@ const RoomDetails = () => {
   useEffect(() => {
     const fetchRoomDetails = async () => {
       try {
-        const response = await axios.get(`/rooms/${roomId}`);
+        const response = await axios.get(`http://localhost:5000/rooms/${roomId}`, { withCredentials: true });
         setRoom(response.data.room);
         setLoading(false);
       } catch (err) {
-        setError('Failed to load room details.');
+	  console.log(err.message)
+          setError('DEANTOSH Failed to load room details:');
         setLoading(false);
       }
     };

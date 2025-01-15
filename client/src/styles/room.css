@@ -1,7 +1,7 @@
 /* CSS: Room component */
 .create-room {
   display: flex;
-
+  height: calc(100vh - 10vh);
   font-family: Arial, sans-serif;
   background-color: #f5f5f5;
 }
@@ -124,8 +124,7 @@
   background: #007bff;
   border: none;
   border-radius: 4px;
-  cursor: not-allowed;
-  opacity: 0.6;
+  opacity: 1;
 }
 
 .view-room-btn:disabled {
@@ -144,6 +143,7 @@
 
 .room-details-container {
   display: flex;
+  height: calc(100vh - 10vh);
   flex-grow: 1;
 }
 

@@ -40,6 +40,34 @@ class RoomController {
     }
   }
 
+  // View all rooms - GET /rooms
+  static async viewAllRooms(req, res) {
+    try {
+      const rooms = await Room.findDocs();
+      if (rooms.length === 0) {
+        return res.status(404).json({ error: 'No rooms found'});
+      }
+      return res.status(200).json({ rooms }); // Return all rooms
+    } catch (error) {
+      return res.status(500).json({ error: `Error fetching rooms: ${error.message}` });
+    }
+  }
+
+  // View specified room - GET /rooms/:room_id
+  static async viewRoom(req, res) {
+    const room_id = req.params.room_id;
+
+    try {
+      const room = await Room.findOneDoc({ _id: room_id });
+      if (!room) {
+        return res.status(404).json({ error: 'Room not found' });
+      }
+      return res.status(200).json({ room }); // Return room
+    } catch (error) {
+      return res.status(500).json({ error: `Error fetching room: ${error.message}` });
+    }
+  }
+
   // Join Room - POST /rooms/:room_id/users/:user_id/join
   static async joinRoom(req, res) {
     const { room_id, user_id } = req.params;
