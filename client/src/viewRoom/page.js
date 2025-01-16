@@ -40,9 +40,27 @@ const RoomDetails = () => {
         setLoading(false);
       }
     };
-
     fetchRoomDetails();
   }, [roomId]);
+
+  // Join the room
+  const joinRoom = async () => {
+    if (user && room) {
+      try {
+        if (!room.isPrivate) {
+          const response = await axios.post(
+	    `http://localhost:5000/rooms/${room._id}/users/${user._id}/join`
+          );
+          console.log('Joined room successfully:', response.data);
+        } else {
+	console.log('Private room contact Room Admin');
+      }
+      } catch (err) {
+        console.error('Failed to join room:', err);
+        alert('Error joining room');
+      }
+    }
+  };
 
   // Function to set selectedRoom
   const onRoomSelect = (roomId) => {
@@ -67,7 +85,7 @@ const RoomDetails = () => {
 	    <>
               <p>Room is: private</p>
               <p>Contact creator:</p>
-              <p>{room.createdBY.username}: {room.createdBy.email}</p>
+              <p>{room.createdBy.username}: {room.createdBy.email}</p>
 	    </>
 	  ) : (
             <p>Room is: public (Anyone can join)</p>
@@ -75,8 +93,7 @@ const RoomDetails = () => {
           <p>Date created: {room.createdAt}</p>
           <p>Members: {memberCount}</p>
           <div className="room-actions">
-            {/* Placeholder for additional room actions */}
-            <button>Join Room</button>
+            <button onClick={joinRoom}>Join Room</button>
           </div>
 	</div>
       </div>

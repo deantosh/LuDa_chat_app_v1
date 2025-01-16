@@ -4,6 +4,7 @@
  */
 const Room = require('../models/room');
 const User = require('../models/user');
+const { ObjectId } = require('mongodb');
 
 class RoomController {
   // Create Room - POST /rooms
@@ -58,7 +59,9 @@ class RoomController {
     const room_id = req.params.room_id;
 
     try {
-      const room = await Room.findOneDoc({ _id: room_id });
+      const room = await Room.findOneDoc({
+        _id: room_id,
+      }).populate('createdBy', 'username email');
       if (!room) {
         return res.status(404).json({ error: 'Room not found' });
       }
@@ -84,15 +87,15 @@ class RoomController {
       }
 
       // Reset unread messages
-      const unreadMessages = await UnreadMessage.findOne({ roomId: room._id, userId: user._id });
-      if (unreadMessages) {
-        unreadMessages.unreadCount = 0;  // Reset unread messages
-        await unreadMessages.save();
-      }
+      // const unreadMessages = await UnreadMessage.findOneDoc({ roomId: room._id, userId: user._id });
+      // if (unreadMessages) {
+       // unreadMessages.unreadCount = 0;  // Reset unread messages
+        // await unreadMessages.save();
+     //  }
       // Add user to the room's members if not already present
-      if (!room.members.includes(user_id)) {
-        room.members.push(user_id);
-        room.save();
+      if (!room.members.includes(user._id)) {
+        room.members.push(user._id);
+        await room.save();
       }
 
       res.status(200).json({ message: 'User joined the room successfully', room });

@@ -17,7 +17,7 @@ router.get('/users/dashboard', UsersController.getDashboardInfo);
 
 // Auth Management
 router.post('/users/login', AuthController.getConnect);
-router.delete('users/logout', AuthController.getDisconnect);
+router.delete('/users/logout', AuthController.getDisconnect);
 
 // Mesage Management: including replies and reactions
 router.post('/rooms/:room_id/messages', MessageController.sendMessage);
