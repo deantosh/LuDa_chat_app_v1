@@ -14,7 +14,7 @@
     margin-right: auto;
 }
 
-.chat-container p{
+.no-selected-room {
     font-size: 1.2em;
     color: #7f8c8d;
     text-align: center;

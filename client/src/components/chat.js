@@ -60,7 +60,7 @@ const Chat = ({ user, selectedRoom }) => {
       {/* Messages list */}
       <div className="messages-list">
 	{messages.length === 0 ? (
-          <p>No messages</p>
+          <p className="no-text">No messages</p>
 	) : (
           messages.map((message) => (
             <MessageComponent key={message._id} message={message} />

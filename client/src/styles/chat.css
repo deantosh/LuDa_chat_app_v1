@@ -7,13 +7,12 @@
     height: 100%;
 }
 
-.chat p {
-  font-size: 1.2em;
-  color: #7f8c8d;
-  text-align: center;
-  margin-top: 20%;
-}
-
+.no-text {
+    font-size: 1.2em;
+    color: #7f8c8d;
+    text-align: center;
+    margin-top: 20%;
+} 
 /* Messages List */
 .messages-list {
   flex: 1; /* Make the messages list grow and take up most space */

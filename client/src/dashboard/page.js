@@ -41,7 +41,7 @@ const Dashboard = () => {
 	  {selectedRoom ? (
             <Chat user={user} selectedRoom={selectedRoom} />
 	  ) : (
-            <p>Select a room to view messages.</p>
+            <p className="no-selected-room">Select a room to view messages.</p>
 	  )}
         </div>
       </div>
