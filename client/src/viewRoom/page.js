@@ -10,16 +10,33 @@ const RoomDetails = () => {
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [user, setUser] = useState("");
+  const [selectedRoom, setSelectedRoom] = useState(null) // object id
 
   useEffect(() => {
+    // Fetch current user details
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/users/me", {
+          withCredentials: true,
+        });
+        setUser(response.data.user); // Set the logged-in user ID
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+        alert("Failed to fetch user details.");
+      }
+    };
+    fetchUser();
+
+    // Fetch room details
     const fetchRoomDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/rooms/${roomId}`, { withCredentials: true });
+        const response = await axios.get(`http://localhost:5000/rooms/${roomId}`);
         setRoom(response.data.room);
         setLoading(false);
       } catch (err) {
 	  console.log(err.message)
-          setError('DEANTOSH Failed to load room details:');
+          setError('Failed to load room details:');
         setLoading(false);
       }
     };
@@ -27,28 +44,41 @@ const RoomDetails = () => {
     fetchRoomDetails();
   }, [roomId]);
 
+  // Function to set selectedRoom
+  const onRoomSelect = (roomId) => {
+    setSelectedRoom(roomId);
+  }
+
   if (loading) return <div className="loading">Loading room details...</div>;
   if (error) return <div className="error">{error}</div>;
 
+  // Get the number of members in a room
   const memberCount = room.members ? room.members.length : 0;
 
   return (
     <div className="room-details-page">
-      <Header />
+      <Header user={user} />
       <div className="room-details-container">
-        <Sidebar />
-        <div className="room-details-content">
+        <Sidebar onRoomSelect={onRoomSelect} />
+	<div className="room-details-content">
           <h1>{room.name}</h1>
           <p>{room.description}</p>
-          {/* Display the number of members */}
-          <p><strong>Number of Members:</strong> {memberCount}</p>
-          
-          {/* Add more room details here */}
+	  {room.isPrivate ? (
+	    <>
+              <p>Room is: private</p>
+              <p>Contact creator:</p>
+              <p>{room.createdBY.username}: {room.createdBy.email}</p>
+	    </>
+	  ) : (
+            <p>Room is: public (Anyone can join)</p>
+	  )}
+          <p>Date created: {room.createdAt}</p>
+          <p>Members: {memberCount}</p>
           <div className="room-actions">
             {/* Placeholder for additional room actions */}
             <button>Join Room</button>
           </div>
-        </div>
+	</div>
       </div>
     </div>
   );

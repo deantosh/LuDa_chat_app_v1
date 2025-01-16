@@ -31,7 +31,6 @@ router.post('/rooms', RoomController.createRoom);
 router.get('/rooms', RoomController.viewAllRooms);
 router.get('/rooms/:room_id', RoomController.viewRoom);
 router.post('/rooms/:room_id/users/:user_id/join', RoomController.joinRoom);
-// router.get('/rooms', RoomController.getAllRooms);
 router.delete('/rooms/:room_id/users/:user_id/exit', RoomController.exitRoom);
 
 // Export router

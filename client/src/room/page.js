@@ -8,7 +8,8 @@ const RoomCreation = ({ onRoomCreated }) => {
   const [roomName, setRoomName] = useState("");
   const [description, setDescription] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
-  const [user, setUser] = useState(""); // To store the logged-in user ID
+  const [user, setUser] = useState("");
+  const [selectedRoom, setSelectedRoom] = useState(null);
 
   // Fetch the current user details
   useEffect(() => {
@@ -26,6 +27,12 @@ const RoomCreation = ({ onRoomCreated }) => {
     fetchUser();
   }, []); // Runs only once on component mount
 
+  // Function to set selectedRoom
+  const onRoomSelect = (roomId) => {
+    setSelectedRoom(roomId);
+  }
+
+  // Handle creation of new room
   const handleRoomCreation = async () => {
     if (roomName.trim() && user._id) {
       try {
@@ -57,11 +64,11 @@ const RoomCreation = ({ onRoomCreated }) => {
   return (
     <>
       {/*Header component*/}
-      <Header />
+      <Header user={user} />
       <div className="create-room">
       {/*Sidebar component*/}
-      <Sidebar />
-        <div className="room-creation-form">
+      <Sidebar onRoomSelect={onRoomSelect} />
+      <div className="room-creation-form">
         <h2>Create New Room</h2>
         <input
           type="text"

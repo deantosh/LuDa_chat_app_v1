@@ -9,9 +9,24 @@ const RoomsDisplay = () => {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [user, setUser] = useState("");
+  const [selectedRoom, setSelectedRoom] = useState(null); // object id
 
   // Fetch rooms from the API
   useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/users/me", {
+          withCredentials: true,
+        });
+        setUser(response.data.user); // Set the logged-in user ID
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+        alert("Failed to fetch user details.");
+      }
+    };
+
+    fetchUser();
     const fetchRooms = async () => {
       try {
         const response = await axios.get('http://localhost:5000/rooms');
@@ -26,14 +41,19 @@ const RoomsDisplay = () => {
     fetchRooms();
   }, []);
 
+  // Function to set selectedRoom
+  const onRoomSelect = (roomId) => {
+    setSelectedRoom(roomId);
+  }
+
   if (loading) return <div className="loading">Loading rooms...</div>;
   if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="rooms-page">
-      <Header />
+      <Header user={user} />
       <div className="rooms-container"> 
-        <Sidebar />
+        <Sidebar onRoomSelect={onRoomSelect} />
         <div className="rooms-content">
           <h1>Available Rooms</h1>
           <div className="room-cards">
