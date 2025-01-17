@@ -1,5 +1,6 @@
 import React from 'react';
 import '../styles/message.css';
+import formatTimeStamp from '../dateFormatFunc';
 
 const MessageComponent = ({ message }) => {
   const {senderId, text, createdAt} = message;
@@ -10,7 +11,7 @@ const MessageComponent = ({ message }) => {
   return (
     <div className="message">
       <div className="message-header">
-        <strong>{senderId.username}</strong><span>{formattedTimeStamp}</span>
+          <strong>{senderId.username}</strong><span>{formatTimeStamp(formattedTimeStamp)}</span>
       </div>
       <p>{text}</p>
     </div>
