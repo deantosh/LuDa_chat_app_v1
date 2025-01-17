@@ -67,23 +67,19 @@ class AuthController {
 
   static async getDisconnect(req, res) {
     // Get user token
-    const userToken = req.headers["x-token"];
+    const userToken = req.cookies.token;
     if (!userToken) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    // Create key using token
-    const key = `auth_${userToken}`;
-
-    // Handle invalid token
     try {
-      const validToken = await redisClient.get(key);
-      if (!validToken) {
+      const userId = await redisClient.get(userToken);
+      if (!userId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
 
       // Delete token
-      await redisClient.del(key);
+      await redisClient.del(userToken);
       return res.status(204).json({});
     } catch (error) {
       return res.status(500).json({ error: "Internal Server Error" });
