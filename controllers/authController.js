@@ -59,6 +59,10 @@ class AuthController {
         maxAge: 24 * 60 * 60 * 1000, // Cookie expires in 24 hours
         sameSite: "Lax", // CSRF protection
       });
+
+      // Update users online status
+      User.updateDoc({ _id: user._id }, { isOnline: true });
+
       return res.status(200).json({ token });
     } catch (error) {
       return res.status(500).json({ error: "Internal Server Error" });
