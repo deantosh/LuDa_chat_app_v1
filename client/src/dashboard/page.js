@@ -4,10 +4,12 @@ import Header from "../components/header";
 import Chat from "../components/chat";
 import "../styles/dashboard.css";
 import axios from "axios";
+import { useLocation }  from "react-router-dom";
 
 const Dashboard = () => {
   const [user, setUser] = useState(""); // To store the logged-in user ID
   const [selectedRoom, setSelectedRoom] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -23,6 +25,12 @@ const Dashboard = () => {
     };
     fetchUser();
   }, []); // Runs only once on component mount
+
+  useEffect(() => {
+    if (location.state?.roomId) {
+      setSelectedRoom(location.state.roomId);
+    }
+  }, [location]);
 
   // Function to set selectedRoom
   const onRoomSelect = (roomId) => {
