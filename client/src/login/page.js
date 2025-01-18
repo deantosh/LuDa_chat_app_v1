@@ -200,6 +200,7 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     height: "100vh",
+    padding: "20px",
     backgroundColor: "#f5f5f5",
   },
   form: {
@@ -224,7 +225,6 @@ const styles = {
     color: "#555",
   },
   input: {
-    width: "100%",
     padding: "10px",
     fontSize: "1rem",
     borderRadius: "4px",
