@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import '../styles/sidebar.css';
 import axios from "axios";
 
@@ -8,6 +8,8 @@ const Sidebar = ({ onRoomSelect }) => {
   const [user, setUser] = useState("");
   const [rooms, setRooms] = useState([]);
   const [unreadMessages, setUnreadMessages] = useState({});
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     axios
@@ -22,13 +24,22 @@ const Sidebar = ({ onRoomSelect }) => {
       });
   }, []);
 
+  // Handle room click
+  const handleRoomClick = (roomId) => {
+    onRoomSelect(roomId);
+
+    if (location.pathname !== "/dashboard") {
+      navigate("/dashboard", { state: { roomId } });
+    }
+  }
+
   return (
     <div className="sidebar">
       <h2>Your Rooms</h2>
       <ul>
         {rooms.map((room) => (
           <li key={room._id}>
-	    <button onClick={() => onRoomSelect(room._id)}>
+	    <button onClick={() => handleRoomClick(room._id)}>
               {room.name}
               {unreadMessages[room._id] > 0 && (
                 <span className="badge">
