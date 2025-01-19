@@ -8,15 +8,13 @@
   width: 100%;
 }
 
-.chat-container {
-    width: 60%;
-    margin-left: auto;
-    margin-right: auto;
-}
-
 .no-selected-room {
     font-size: 1.2em;
     color: #7f8c8d;
     text-align: center;
     margin-top: 20%;
+}
+
+.content-container {
+  width: 70%;
 }

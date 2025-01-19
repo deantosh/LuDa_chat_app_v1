@@ -1,6 +1,8 @@
 /* Chat Section */
 .chat {
     display: flex;
+    width: 80%;
+    margin: auto;
     flex-direction: column;
     background-color: #f9f9f9;
     overflow: hidden;
