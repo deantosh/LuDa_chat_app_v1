@@ -1,59 +1,101 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext } from "react";
+import axios from "axios";
 import Sidebar from "../components/sidebar";
 import Header from "../components/header";
 import Chat from "../components/chat";
+import RoomCreation from "../components/createRoom";
+import RoomsDisplay from "../components/displayRooms"
 import "../styles/dashboard.css";
-import axios from "axios";
-import { useLocation }  from "react-router-dom";
+
+// Context for global user data
+export const UserContext = createContext();
 
 const Dashboard = () => {
-  const [user, setUser] = useState(""); // To store the logged-in user ID
+  const [user, setUser] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState(null);
-  const location = useLocation();
+  const [roomDetailsId, setRoomDetailsId] = useState(null);
+  const [rooms, setRooms] = useState([]);
+  const [view, setView] = useState("home");
 
+  // Fetch current logged-in user
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await axios.get("http://localhost:5000/users/me", {
           withCredentials: true,
         });
-        setUser(response.data.user); // Set the logged-in user ID
+        setUser(response.data.user);
       } catch (error) {
         console.error("Failed to fetch user:", error);
-        alert("Failed to fetch user details.");
       }
     };
     fetchUser();
-  }, []); // Runs only once on component mount
+  }, []);
 
+  // Fetch rooms from the API when the user is loaded
   useEffect(() => {
-    if (location.state?.roomId) {
-      setSelectedRoom(location.state.roomId);
-    }
-  }, [location]);
+    axios
+      .get("http://localhost:5000/users/dashboard", { withCredentials: true })
+      .then(({ data }) => {
+        setRooms(data.rooms);
+      })
+      .catch((err) => {
+        console.error("Error:", err.response ? err.response.data : err);
+      });
+  }, []);
 
-  // Function to set selectedRoom
-  const onRoomSelect = (roomId) => {
+  // Add the newly created room to the rooms list
+  const handleRoomAdded = (newRoom) => {
+    setRooms((prevRooms) => [...prevRooms, newRoom]);
+  };
+
+  // Handlers for changing view
+
+  const handleRoomSelect = (roomId) => {
     setSelectedRoom(roomId);
+    setView("chat");
   }
 
+  // Function to render the active component
+  const renderView = () => {
+    if (view === "chat") {
+      return selectedRoom ? (
+        <Chat user={user} selectedRoom={selectedRoom} />
+      ) : (
+        <p className="no-selected-room">Select a room to view messages.</p>
+      );
+    }
+    if (view === "create-room") {
+      return <RoomCreation onRoomAdded={handleRoomAdded} />;
+    }
+    if (view === "rooms") {
+      return (
+        <RoomsDisplay rooms={rooms} setView={setView} />
+      );
+    }
+    if (view === "view-room-details") {
+      return (
+        <RoomDetails />
+      )
+    }
+    return <p>Select an option from the sidebar.</p>;
+  };
+
   return (
-    <>
+    <UserContext.Provider value={{ user, setUser }}>
+      
       {/*Header component*/}
-      <Header user={user} />
+      <Header user={user} />      
+
       <div className="dashboard">
+
         {/*Sidebar component*/}
-        <Sidebar onRoomSelect={onRoomSelect} />
-          {/*Chat component*/}
-        <div className="chat-container">
-	  {selectedRoom ? (
-            <Chat user={user} selectedRoom={selectedRoom} />
-	  ) : (
-            <p className="no-selected-room">Select a room to view messages.</p>
-	  )}
-        </div>
+        <Sidebar setView={setView} onRoomSelect={handleRoomSelect}/>
+        
+        {/*Main content component*/}
+        <div className="content-container">{renderView()}</div>
       </div>
-    </>
+    </UserContext.Provider>
   );
 };
 
