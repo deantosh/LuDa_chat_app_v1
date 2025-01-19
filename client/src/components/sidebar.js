@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from 'react-router-dom';
 import '../styles/sidebar.css';
 import axios from "axios";
 
 
-const Sidebar = ({ onRoomSelect }) => {
-  const [user, setUser] = useState("");
+const Sidebar = ({ setView, onRoomSelect }) => {
   const [rooms, setRooms] = useState([]);
   const [unreadMessages, setUnreadMessages] = useState({});
-  const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
     axios
       .get("http://localhost:5000/users/dashboard", { withCredentials: true })
       .then(({ data }) => {
-        setUser(data.user);
         setRooms(data.rooms);
         setUnreadMessages(data.unreadMessages);
       })
@@ -27,10 +22,7 @@ const Sidebar = ({ onRoomSelect }) => {
   // Handle room click
   const handleRoomClick = (roomId) => {
     onRoomSelect(roomId);
-
-    if (location.pathname !== "/dashboard") {
-      navigate("/dashboard", { state: { roomId } });
-    }
+    setView("chat");
   }
 
   return (
@@ -51,15 +43,12 @@ const Sidebar = ({ onRoomSelect }) => {
         ))}
       </ul>
 
-      {/* Link to create a new room page */}
-      <Link to="/room">
-        <button>Create New Room</button>
-      </Link>
+      {/* Button to create a new room */}
+      <button onClick={() => setView("create-room")}>Create New Room</button>
 
-      {/* Link to view all rooms page */}
-      <Link to="/rooms">
-        <button>View All Rooms</button>
-      </Link>
+      {/* Button to view all rooms */}
+      <button onClick={() => setView("rooms")}>View All Rooms</button>
+
     </div>
   );
 };
