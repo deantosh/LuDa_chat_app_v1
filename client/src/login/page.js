@@ -40,7 +40,7 @@ const LoginForm = ({ toggleForm }) => {
       if (response.ok) {
         const data = await response.json();
         console.log("Login successful:", data);
-        navigate('/dashboard');
+        navigate('/account');
       } else {
         console.error("Login failed:", await response.text());
       }
