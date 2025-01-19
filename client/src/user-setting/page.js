@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import "./UserSettings.css";
+import '../styles/UserSettings.css'
 
 const Settings = () => {
   const [profile, setProfile] = useState({
@@ -35,7 +35,7 @@ const Settings = () => {
   // Handle profile updates
   const handleSave = async () => {
     try {
-      const response = await fetch("/api/user/profile", {
+      const response = await fetch("http://localhost", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
