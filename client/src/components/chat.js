@@ -11,7 +11,7 @@ const Chat = ({ user, selectedRoom }) => {
   // Fetch messages for the selected room
   useEffect(() => {
     if (selectedRoom) {
-      axios.get(`http://localhost:5000/rooms/${selectedRoom}/messages`)
+      axios.get(`http://localhost:5000/rooms/${selectedRoom._id}/messages`)
         .then(({ data }) => {
           setMessages(data.messages);
         })
@@ -33,7 +33,7 @@ const Chat = ({ user, selectedRoom }) => {
       setNewMessage(''); // Clear the input field
     if (tempMessage.trim()) {
       axios.post(
-        `http://localhost:5000/rooms/${selectedRoom}/messages`,
+        `http://localhost:5000/rooms/${selectedRoom._id}/messages`,
 	{
             text: tempMessage,
 	    roomId: selectedRoom,
@@ -57,6 +57,10 @@ const Chat = ({ user, selectedRoom }) => {
 
   return (
     <div className="chat">
+      <div className="chat-header">
+        <h3> {selectedRoom.name} |</h3>
+        <button>Exit room</button>
+      </div>
       {/* Messages list */}
       <div className="messages-list">
 	{messages.length === 0 ? (
