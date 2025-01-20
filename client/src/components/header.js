@@ -3,7 +3,7 @@ import "../styles/header.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const Header = ({ user }) => {
+const Header = ({ user, setView }) => {
   const [isDropdownOpen, setIsDropdownOPen] = useState(false);
   const navigate = useNavigate();
 
@@ -12,7 +12,7 @@ const Header = ({ user }) => {
 
   // handle route to profile settings
   const handleProfileSettings = () => {
-    navigate("/profile-settings");
+    setView("profile-settings");
   };
 
   // Handle logout
