@@ -1,13 +1,6 @@
-import { Link } from 'react-router-dom';
-import axios from 'axios';
 import '../styles/room.css';
 
-const RoomsDisplay = ({ rooms, setView }) => {
-  // Handle view room details
-  const handleViewRoom = (roomId) => {
-    setView("view-room-details", roomId);
-  }
-
+const RoomsDisplay = ({ rooms, onRoomView }) => {
   return (
     <div className="rooms-content">
       <h1>Available Rooms</h1>
@@ -16,7 +9,7 @@ const RoomsDisplay = ({ rooms, setView }) => {
           <div key={room._id} className="room-card">
             <h2>{room.name}</h2>
             <p>{room.description}</p>
-              <button className="view-room-btn" onClick={() => handleViewRoom(room._id)}>
+              <button className="view-room-btn" onClick={() => onRoomView(room)}>
                 View Room
               </button>
           </div>
