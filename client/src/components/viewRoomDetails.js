@@ -1,46 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import Sidebar from '../c
-import '../styles/room.css';
+import React, { useContext } from "react";
+import axios from "axios";
+import "../styles/room.css";
+import { UserContext } from "../dashboard/page";
 
-const RoomDetails = () => {
-  const { roomId } = useParams(); // Extract roomId from the URL
-  const [room, setRoom] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [user, setUser] = useState("");
-  const [selectedRoom, setSelectedRoom] = useState(null) // object id
-
-  useEffect(() => {
-    // Fetch current user details
-    const fetchUser = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/users/me", {
-          withCredentials: true,
-        });
-        setUser(response.data.user); // Set the logged-in user ID
-      } catch (error) {
-        console.error("Failed to fetch user:", error);
-        alert("Failed to fetch user details.");
-      }
-    };
-    fetchUser();
-
-    // Fetch room details
-    const fetchRoomDetails = async () => {
-      try {
-        const response = await axios.get(`http://localhost:5000/rooms/${roomId}`);
-        setRoom(response.data.room);
-        setLoading(false);
-      } catch (err) {
-	  console.log(err.message)
-          setError('Failed to load room details:');
-        setLoading(false);
-      }
-    };
-    fetchRoomDetails();
-  }, [roomId]);
+const RoomDetails = ({ room, onRoomAdded }) => {
+  const { user } = useContext(UserContext);
 
   // Join the room
   const joinRoom = async () => {
@@ -51,6 +15,9 @@ const RoomDetails = () => {
 	    `http://localhost:5000/rooms/${room._id}/users/${user._id}/join`
           );
           console.log('Joined room successfully:', response.data);
+          
+          // Add room to the sidebar
+          onRoomAdded(response.data.room);
         } else {
 	console.log('Private room contact Room Admin');
       }
@@ -60,14 +27,6 @@ const RoomDetails = () => {
       }
     }
   };
-
-  // Function to set selectedRoom
-  const onRoomSelect = (roomId) => {
-    setSelectedRoom(roomId);
-  }
-
-  if (loading) return <div className="loading">Loading room details...</div>;
-  if (error) return <div className="error">{error}</div>;
 
   // Get the number of members in a room
   const memberCount = room.members ? room.members.length : 0;
