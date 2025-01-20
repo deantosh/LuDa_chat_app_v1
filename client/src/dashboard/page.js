@@ -6,6 +6,7 @@ import Chat from "../components/chat";
 import RoomCreation from "../components/createRoom";
 import RoomsDisplay from "../components/displayRooms";
 import RoomDetails from "../components/viewRoomDetails";
+import ProfileForm from "../components/userProfileSettings";
 import "../styles/dashboard.css";
 
 // Context for global user data
@@ -103,6 +104,9 @@ const Dashboard = () => {
         />
       )
     }
+    if (view === "profile-settings") {
+      return ( <ProfileForm />);
+    }
     return <p className="no-selected-room">Select a room to view message</p>;
   };
 
@@ -110,7 +114,7 @@ const Dashboard = () => {
     <UserContext.Provider value={{ user, setUser }}>
       
       {/*Header component*/}
-      <Header user={user} />      
+      <Header user={user} setView={setView} />      
 
       <div className="dashboard">
 
