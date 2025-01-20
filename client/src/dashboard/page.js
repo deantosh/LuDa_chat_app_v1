@@ -96,7 +96,11 @@ const Dashboard = () => {
     }
     if (view === "view-room-details") {
       return (
-        <RoomDetails room={roomDetails} onRoomAdded={handleRoomAdded} />
+        <RoomDetails
+          rooms={userRooms }
+          room={roomDetails}
+          onRoomAdded={handleRoomAdded}
+        />
       )
     }
     return <p className="no-selected-room">Select a room to view message</p>;

@@ -3,14 +3,18 @@ import axios from "axios";
 import "../styles/room.css";
 import { UserContext } from "../dashboard/page";
 
-const RoomDetails = ({ room, onRoomAdded }) => {
+const RoomDetails = ({ rooms, room, onRoomAdded }) => {
   const { user } = useContext(UserContext);
 
   // Join the room
   const joinRoom = async () => {
     if (user && room) {
       try {
-        if (!room.isPrivate) {
+        // Handle user is already a member in room
+        const isRoomPresent = rooms.some(
+          (existingRoom) => existingRoom._id === room._id
+        )
+        if (!room.isPrivate && !isRoomPresent) {
           const response = await axios.post(
 	    `http://localhost:5000/rooms/${room._id}/users/${user._id}/join`
           );
