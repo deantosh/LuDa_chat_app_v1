@@ -4,7 +4,8 @@ import Sidebar from "../components/sidebar";
 import Header from "../components/header";
 import Chat from "../components/chat";
 import RoomCreation from "../components/createRoom";
-import RoomsDisplay from "../components/displayRooms"
+import RoomsDisplay from "../components/displayRooms";
+import RoomDetails from "../components/viewRoomDetails";
 import "../styles/dashboard.css";
 
 // Context for global user data
@@ -13,8 +14,10 @@ export const UserContext = createContext();
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState(null);
-  const [roomDetailsId, setRoomDetailsId] = useState(null);
+  const [roomDetails, setRoomDetails] = useState(null);
   const [rooms, setRooms] = useState([]);
+  const [userRooms, setUserRooms] = useState([]);
+  const [unreadMessages, setUnreadMessages] = useState({});
   const [view, setView] = useState("home");
 
   // Fetch current logged-in user
@@ -32,10 +35,10 @@ const Dashboard = () => {
     fetchUser();
   }, []);
 
-  // Fetch rooms from the API when the user is loaded
+  // Fetch all available rooms
   useEffect(() => {
     axios
-      .get("http://localhost:5000/users/dashboard", { withCredentials: true })
+      .get("http://localhost:5000/rooms")
       .then(({ data }) => {
         setRooms(data.rooms);
       })
@@ -44,9 +47,22 @@ const Dashboard = () => {
       });
   }, []);
 
+  // Fetch user rooms -- to be used in the sidebar
+  useEffect(() => {                                                             
+    axios                                                                       
+      .get("http://localhost:5000/users/dashboard", { withCredentials: true })  
+      .then(({ data }) => {                                                     
+        setUserRooms(data.rooms);                                                   
+        setUnreadMessages(data.unreadMessages);                                 
+      })                                                                        
+      .catch((err) => {                                                         
+        console.error("Error:", err.response ? err.response.data : err);        
+      });                                                                       
+  }, []);
+
   // Add the newly created room to the rooms list
   const handleRoomAdded = (newRoom) => {
-    setRooms((prevRooms) => [...prevRooms, newRoom]);
+    setUserRooms((prevRooms) => [...prevRooms, newRoom]);
   };
 
   // Handlers for changing view
@@ -54,6 +70,11 @@ const Dashboard = () => {
   const handleRoomSelect = (roomId) => {
     setSelectedRoom(roomId);
     setView("chat");
+  }
+
+  const handleViewRoomDetails = (room) => {
+    setRoomDetails(room);
+    setView("view-room-details")
   }
 
   // Function to render the active component
@@ -70,15 +91,15 @@ const Dashboard = () => {
     }
     if (view === "rooms") {
       return (
-        <RoomsDisplay rooms={rooms} setView={setView} />
+        <RoomsDisplay rooms={rooms} onRoomView={handleViewRoomDetails} />
       );
     }
     if (view === "view-room-details") {
       return (
-        <RoomDetails />
+        <RoomDetails room={roomDetails} onRoomAdded={handleRoomAdded} />
       )
     }
-    return <p>Select an option from the sidebar.</p>;
+    return <p className="no-selected-room">Select a room to view message</p>;
   };
 
   return (
@@ -90,7 +111,12 @@ const Dashboard = () => {
       <div className="dashboard">
 
         {/*Sidebar component*/}
-        <Sidebar setView={setView} onRoomSelect={handleRoomSelect}/>
+        <Sidebar
+          userRooms={userRooms}
+          unreadMessages={unreadMessages}
+          setView={setView}
+          onRoomSelect={handleRoomSelect}
+        />
         
         {/*Main content component*/}
         <div className="content-container">{renderView()}</div>
