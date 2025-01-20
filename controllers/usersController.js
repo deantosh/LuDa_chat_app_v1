@@ -79,6 +79,49 @@ class UsersController {
     }
   }
 
+  // Update the current user's data
+  static async updateUser(req, res) {
+    const userToken = req.cookies.token;
+
+    if (!userToken) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    try {
+      // Retrieve the user ID from Redis
+      const userId = await redisClient.get(userToken);
+
+      if (!userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      // Find the user by ID using Mongoose
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      // Update user fields with the data from the request body
+      const { username, avatar, bio, status } = req.body;
+
+      // Prepare the update data
+      const updateData = {};
+      if (username) updateData.username = username;
+      if (avatar) updateData.avatar = avatar;
+      if (bio) updateData.bio = bio;
+      if (status) updateData.status = status;
+
+      // Save the updated user
+      const updatedUser = await User.updateDoc({ _id: userId }, updateData);
+
+      // Return the updated user data
+      return res.status(200).json({ updatedUser });
+    } catch (error) {
+      console.error("Error updating user:", error.message);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  }
+
   // Get dashboard info for the current user
   static async getDashboardInfo(req, res) {
     const userToken = req.cookies.token; // Retrieve the token from cookies
