@@ -1,23 +1,6 @@
-import React, { useState, useEffect } from "react";
 import '../styles/sidebar.css';
-import axios from "axios";
 
-
-const Sidebar = ({ setView, onRoomSelect }) => {
-  const [rooms, setRooms] = useState([]);
-  const [unreadMessages, setUnreadMessages] = useState({});
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/users/dashboard", { withCredentials: true })
-      .then(({ data }) => {
-        setRooms(data.rooms);
-        setUnreadMessages(data.unreadMessages);
-      })
-      .catch((err) => {
-        console.error("Error:", err.response ? err.response.data : err);
-      });
-  }, []);
+const Sidebar = ({ userRooms, unreadMessages, setView, onRoomSelect }) => {
 
   // Handle room click
   const handleRoomClick = (roomId) => {
@@ -29,7 +12,7 @@ const Sidebar = ({ setView, onRoomSelect }) => {
     <div className="sidebar">
       <h2>Your Rooms</h2>
       <ul>
-        {rooms.map((room) => (
+        {userRooms.map((room) => (
           <li key={room._id}>
 	    <button onClick={() => handleRoomClick(room._id)}>
               {room.name}
