@@ -68,8 +68,8 @@ const Dashboard = () => {
 
   // Handlers for changing view
 
-  const handleRoomSelect = (roomId) => {
-    setSelectedRoom(roomId);
+  const handleRoomSelect = (room) => {
+    setSelectedRoom(room);
     setView("chat");
   }
 

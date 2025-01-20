@@ -3,8 +3,8 @@ import '../styles/sidebar.css';
 const Sidebar = ({ userRooms, unreadMessages, setView, onRoomSelect }) => {
 
   // Handle room click
-  const handleRoomClick = (roomId) => {
-    onRoomSelect(roomId);
+  const handleRoomClick = (room) => {
+    onRoomSelect(room);
     setView("chat");
   }
 
@@ -14,7 +14,7 @@ const Sidebar = ({ userRooms, unreadMessages, setView, onRoomSelect }) => {
       <ul>
         {userRooms.map((room) => (
           <li key={room._id}>
-	    <button onClick={() => handleRoomClick(room._id)}>
+	    <button onClick={() => handleRoomClick(room)}>
               {room.name}
               {unreadMessages[room._id] > 0 && (
                 <span className="badge">
