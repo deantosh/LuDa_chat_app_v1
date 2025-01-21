@@ -58,8 +58,8 @@ const Chat = ({ user, selectedRoom }) => {
   return (
     <div className="chat">
       <div className="chat-header">
-        <h3> {selectedRoom.name} |</h3>
-        <button>Exit room</button>
+        <h3 className="room-name"> {selectedRoom.name} </h3>
+        <button className="exit-btn">Exit room</button>
       </div>
       {/* Messages list */}
       <div className="messages-list">
