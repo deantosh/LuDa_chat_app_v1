@@ -5,12 +5,15 @@ const Room = require('../models/room');
 const Reply = require('../models/reply');
 const Message = require('../models/message');
 const Reaction = require('../models/reaction');
+const { getIO } = require('../socket');
+
 
 class MessageController {
   // Send Message - POST /rooms/:room_id/messages
   static async sendMessage(req, res) {
     const { room_id } = req.params;
     const { senderId, text, attachments } = req.body;
+    const io = getIO();
 
     try {
       if (!senderId) {
@@ -32,6 +35,20 @@ class MessageController {
         attachments,
       });
 
+      const populatedMessage = await Message.findOneDoc({ _id: message._id }).populate('senderId', 'username');
+
+      // Prepare message to emit to socket clients
+      const messageToEmit = {
+        _id: message._id.toString(), // Convert ObjectId to string
+        createdAt: message.createdAt,
+        roomId: message.roomId.toString(), // Convert ObjectId to string
+        senderId: {
+          _id: populatedMessage.senderId._id.toString(), // Convert ObjectId to string
+          username: populatedMessage.senderId.username,
+        },
+        text: populatedMessage.text,
+      };
+      
       // Increment unread message count for other users in the room (excluding sender)
       // const usersInRoom = await Room.findOneDoc({ _id: room_id }).populate('members');
       // const bulkOps = usersInRoom[0].users
@@ -48,7 +65,10 @@ class MessageController {
       //if (bulkOps.length > 0) {
        // await UnreadMessage.bulkWrite(bulkOps);
       //}
-      res.status(201).json({ message });
+
+      io.to(room_id).emit('newMessage', messageToEmit);
+
+      res.status(201).json({ populatedMessage });
     } catch (error) {
       res.status(500).json({ error: `Failed to send message: ${error.message}` });
     }
