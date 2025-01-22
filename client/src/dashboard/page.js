@@ -1,4 +1,5 @@
-import React, { useState, useEffect, createContext } from "react";
+import React, { useState, useEffect, createContext, useRef } from "react";
+import { io } from 'socket.io-client';
 import axios from "axios";
 import Sidebar from "../components/sidebar";
 import Header from "../components/header";
@@ -9,8 +10,9 @@ import RoomDetails from "../components/viewRoomDetails";
 import ProfileForm from "../components/userProfileSettings";
 import "../styles/dashboard.css";
 
-// Context for global user data
+// Context for global data
 export const UserContext = createContext();
+export const SocketContext = createContext();
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -21,6 +23,9 @@ const Dashboard = () => {
   const [unreadMessages, setUnreadMessages] = useState({});
   const [view, setView] = useState("home");
 
+  // Create a socket reference
+  const socket = useRef(null);
+ 
   // Fetch current logged-in user
   useEffect(() => {
     const fetchUser = async () => {
@@ -35,6 +40,20 @@ const Dashboard = () => {
     };
     fetchUser();
   }, []);
+
+  // Initialize socket connection when user is logged in
+  useEffect(() => {
+    if (user) {
+      socket.current = io("http://localhost:5000");  // Initialize socket
+
+      // Cleanup on component unmount
+      return () => {
+        if (socket.current) {
+          socket.current.disconnect();
+        }
+      };
+    }
+  }, [user]);
 
   // Fetch all available rooms
   useEffect(() => {
@@ -112,23 +131,24 @@ const Dashboard = () => {
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
-      
-      {/*Header component*/}
-      <Header user={user} setView={setView} />      
+      <SocketContext.Provider value={{ socket }}>
+        {/*Header component*/}
+        <Header user={user} setView={setView} />      
 
-      <div className="dashboard">
+        <div className="dashboard">
 
-        {/*Sidebar component*/}
-        <Sidebar
-          userRooms={userRooms}
-          unreadMessages={unreadMessages}
-          setView={setView}
-          onRoomSelect={handleRoomSelect}
-        />
+          {/*Sidebar component*/}
+          <Sidebar
+            userRooms={userRooms}
+            unreadMessages={unreadMessages}
+            setView={setView}
+            onRoomSelect={handleRoomSelect}
+          />
         
-        {/*Main content component*/}
-        <div className="content-container">{renderView()}</div>
-      </div>
+          {/*Main content component*/}
+          <div className="content-container">{renderView()}</div>
+        </div>
+      </SocketContext.Provider>
     </UserContext.Provider>
   );
 };
