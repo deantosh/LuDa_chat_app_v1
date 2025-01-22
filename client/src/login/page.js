@@ -22,36 +22,55 @@ const LoginOrSignup = () => {
 const LoginForm = ({ toggleForm }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const authHeader = "Basic " + btoa(`${email}:${password}`);
-      const response = await fetch("http://localhost:5000/users/login", {
-        method: "POST",
-        credentials: 'include',
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: authHeader,
-        },
-        body: JSON.stringify({ email, password }),
-      });
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Login successful:", data);
-        navigate('/account');
-      } else {
-        console.error("Login failed:", await response.text());
-      }
-    } catch (error) {
-      console.error("An error occurred:", error);
-    }
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!isValidEmail(email)) {
+    setMessage("Invalid email address.");
+    return;
+  }
+
+  if (password.length < 5) {
+    setMessage("Password must be at least 6 characters long.");
+    return;
+  }
+
+  try {
+    const authHeader = "Basic " + btoa(`${email}:${password}`);
+    const response = await fetch("http://localhost:5000/users/login", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authHeader,
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (response.ok) {
+      setMessage("Login successful."); // Display the message immediately
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Introduce a 1-second delay
+      navigate('/account'); // Navigate after the delay
+    } else {
+      setMessage("Login failed: " + await response.text());
+    }
+  } catch (error) {
+    setMessage("An error occurred: " + error.message);
+  }
+};
 
   return (
     <form onSubmit={handleSubmit} style={styles.form}>
       <h2 style={styles.heading}>Login</h2>
+      {message && <p style={{ ...styles.message, color: message.includes("successful") ? "green" : "red" }}>{message}</p>}
       <div style={styles.inputGroup}>
         <label htmlFor="email" style={styles.label}>
           Email:
@@ -97,12 +116,28 @@ const SignupForm = ({ toggleForm }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
+
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!isValidEmail(email)) {
+      setMessage("Invalid email address.");
+      return;
+    }
+
+    if (password.length < 5) {
+      setMessage("Password must be at least 5 characters long.");
+      return;
+    }
+
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      setMessage("Passwords do not match.");
       return;
     }
 
@@ -115,19 +150,19 @@ const SignupForm = ({ toggleForm }) => {
         body: JSON.stringify({ username, email, password }),
       });
       if (response.ok) {
-        const data = await response.json();
-        console.log("Signup successful:", data);
+        setMessage("Signup successful.");
       } else {
-        console.error("Signup failed:", await response.text());
+        setMessage("Signup failed: " + await response.text());
       }
     } catch (error) {
-      console.error("An error occurred:", error);
+      setMessage("An error occurred: " + error.message);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} style={styles.form}>
       <h2 style={styles.heading}>Sign Up</h2>
+      {message && <p style={{ ...styles.message, color: message.includes("successful") ? "green" : "red" }}>{message}</p>}
       <div style={styles.inputGroup}>
         <label htmlFor="username" style={styles.label}>
           Username:
@@ -253,6 +288,12 @@ const styles = {
     cursor: "pointer",
     textDecoration: "underline",
   },
+  message: {
+    marginBottom: "15px",
+    fontSize: "0.9rem",
+    textAlign: "center",
+  },
 };
 
 export default LoginOrSignup;
+
