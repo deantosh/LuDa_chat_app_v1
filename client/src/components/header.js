@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "../styles/header.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { SocketContext } from "../dashboard/page";
 
 const Header = ({ user, setView }) => {
   const [isDropdownOpen, setIsDropdownOPen] = useState(false);
   const navigate = useNavigate();
+  const { socket } = useContext(SocketContext);
 
   // Toggle dropdown visibility
   const toggleDropdown = () => setIsDropdownOPen((prevState) => !prevState);
@@ -18,6 +20,12 @@ const Header = ({ user, setView }) => {
   // Handle logout
   const handleLogout = async () => {
     try {
+      // Disconnect the socket before logging out
+      if (socket) {
+        socket.disconnect();
+      }
+
+      // Send a logout request to the backend
       await axios.delete("http://localhost:5000/users/logout", {
         withCredentials: true,
       });
