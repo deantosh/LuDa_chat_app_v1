@@ -97,11 +97,22 @@ const Dashboard = () => {
     setView("view-room-details")
   }
 
+  // Function to remove the room from the user's sidebar (userRooms)
+  const removeRoomFromSidebar = (roomId) => {
+    setUserRooms((prevRooms) => prevRooms.filter((room) => room._id !== roomId));
+  };
+
   // Function to render the active component
   const renderView = () => {
     if (view === "chat") {
       return selectedRoom ? (
-        <Chat user={user} selectedRoom={selectedRoom} />
+        <Chat
+          user={user}
+          selectedRoom={selectedRoom}
+          removeRoomFromSidebar={removeRoomFromSidebar}
+          setSelectedRoom={setSelectedRoom}
+          setView={setView}
+        />
       ) : (
         <p className="no-selected-room">Select a room to view messages.</p>
       );
@@ -131,7 +142,7 @@ const Dashboard = () => {
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
-      <SocketContext.Provider value={{ socket }}>
+      <SocketContext.Provider value={{ socket: socket.current }}>
         {/*Header component*/}
         <Header user={user} setView={setView} />      
 

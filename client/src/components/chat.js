@@ -4,7 +4,7 @@ import MessageComponent from './message';
 import { SocketContext } from '../dashboard/page';
 import '../styles/chat.css';
 
-const Chat = ({ user, selectedRoom }) => {
+const Chat = ({ user, selectedRoom, removeRoomFromSidebar, setSelectedRoom, setView }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef(null);
@@ -14,16 +14,16 @@ const Chat = ({ user, selectedRoom }) => {
   useEffect(() => {
     if (selectedRoom) {
       // Join the selected room
-      socket.current.emit('joinRoom', selectedRoom._id);
+      socket.emit('joinRoom', selectedRoom._id);
 
       // Listen for new messages from the server
-      socket.current.on('newMessage', (message) => {
+      socket.on('newMessage', (message) => {
         setMessages((prevMessages) => [...prevMessages, message]);
       });
 
       // Cleanup on component unmount
       return () => {
-        socket.current.emit('leaveRoom', selectedRoom._id);
+        socket.emit('leaveRoom', selectedRoom._id);
       };
     }
   }, [selectedRoom, socket]);
@@ -73,11 +73,30 @@ const Chat = ({ user, selectedRoom }) => {
     }
   };
 
+  // Function to handle the exit room action
+  const handleExitRoom = () => {
+    if (selectedRoom && user) {
+      axios
+        .delete(`http://localhost:5000/rooms/${selectedRoom._id}/users/${user._id}/exit`, {
+          withCredentials: true,
+        })
+        .then(() => {
+          console.log('Successfully exited the room');
+          removeRoomFromSidebar(selectedRoom._id);
+          setSelectedRoom(null);
+          setView("chat");
+        })
+        .catch((error) => {
+          console.error('Error exiting the room:', error);
+        });
+    }
+  };
+
   return (
     <div className="chat">
       <div className="chat-header">
         <h3 className="room-name"> {selectedRoom.name} </h3>
-        <button className="exit-btn">Exit room</button>
+        <button className="exit-btn" onClick={handleExitRoom}>Exit room</button>
       </div>
       {/* Messages list */}
       <div className="messages-list">
