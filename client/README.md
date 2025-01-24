@@ -1,70 +1,93 @@
-# Getting Started with Create React App
+# LuDa Chat App (Client)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The **LuDa Chat App** client is a real-time chat application built using **React.js**. It provides an interface for users to interact with the backend, allowing them to register, log in, create chat rooms, send messages, and more.
 
-## Available Scripts
+## Project Structure
 
-In the project directory, you can run:
+The client is organized as follows:
 
-### `npm start`
+### Key Sections:
+- **Project Structure**: Describes the organization of the client-side code, including components and their purpose.
+- **Installation**: Instructions on how to set up the client-side application, install dependencies, and run the app locally.
+- **Project Overview**: Summarizes the key features and purpose of the client-side application.
+- **Client Components**: Lists the main components of the client and their functionality.
+- **Testing**: Instructions to run the test suite for the client.
+- **Contributing**: Encourages contributions to the project.
+- **License**: Mentions the licensing details.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Prerequisites
 
-### `npm test`
+Before you begin, ensure you have the following installed on your system:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Node.js** (v12 or higher)
+- **npm** (Node package manager)
 
-### `npm run build`
+If you're using Ubuntu, you can install Node.js by following the official [Node.js installation guide](https://nodejs.org/).
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Installation
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. Clone the repository and navigate to the `client` directory:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    ```bash
+    git clone https://github.com/deantosh/LuDa_chat_app_v1.git
+    cd LuDa_chat_app_v1/client
+    ```
 
-### `npm run eject`
+2. Install the required dependencies:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+    ```bash
+    npm install
+    ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. (Optional) If you are using environment variables for configuration, create a `.env` file and set the required values (e.g., API URL, authentication credentials).
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+4. To run the client locally:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+    ```bash
+    npm start
+    ```
 
-## Learn More
+    This will start the development server, which will usually be available at `http://localhost:3000`.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Project Overview
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+The client provides the interface for users to interact with the backend and perform the following actions:
 
-### Code Splitting
+- **Register** and **Login** to access chat rooms.
+- **Create**, **view**, and **join** chat rooms.
+- **Send and receive messages** in real-time.
+- **View a user profile** and update settings.
+- **React to messages** with likes, dislikes, and replies.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Key Features
 
-### Analyzing the Bundle Size
+- **Real-time Messaging**: Users can send and receive messages instantly, thanks to the WebSocket connection to the backend.
+- **Room Management**: Users can create new rooms, join existing rooms, and view room details.
+- **User Profile**: Users can view their own profile and update their settings.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Client Components
 
-### Making a Progressive Web App
+The main components in the client are:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- **App.js**: The root component that renders the entire application.
+- **Chat.js**: Displays the chat interface where users can send and receive messages.
+- **Sidebar.js**: Displays the list of available chat rooms and allows users to switch between them.
+- **Dashboard.js**: Shows the user’s dashboard with information like active rooms, messages, and profile settings.
+- **Header.js**: Displays the app header with navigation options.
+- **UserProfileSettings.js**: Allows users to update their profile information.
+- **CreateRoom.js**: Allows users to create new chat rooms.
+- **ViewRoomDetails.js**: Displays detailed information about a specific room.
 
-### Advanced Configuration
+## Running the Application
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Once the client is running, you should be able to interact with the app via the interface at `http://localhost:3000`.
 
-### Deployment
+Ensure that the backend server is running on the correct port (usually `http://localhost:5000`), and the client should be able to communicate with it.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Testing
 
-### `npm run build` fails to minify
+The client has a test suite set up using **Jest** and **React Testing Library**. To run the tests:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```bash
+npm test
