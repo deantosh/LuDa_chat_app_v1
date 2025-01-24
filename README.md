@@ -1,36 +1,104 @@
-**LuDa Chat Application**
+# LuDa Chat App
 
-This repository contains scripts that define the LuDa Chat Application is a real-time chat application where users can join different rooms and exchange messages. This project will enhance understanding of WebSocket communication.
+LuDa Chat App is a real-time chat application designed to provide seamless communication. It consists of a client-side interface (frontend) and a server-side application (backend) that handles messaging, user authentication, and other functionalities.
 
-**Overview**
+This project is divided into two main parts:
+- The **client**: a web-based application for users to interact with the chat system.
+- The **server**: the backend that handles data storage, real-time communication, and application logic.
 
+## Table of Contents
 
-**How it works**
+- [Project Overview](#project-overview)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+  - [Client Setup](#client-setup)
+  - [Server Setup](#server-setup)
+- [Running the Application](#running-the-application)
+- [Contributing](#contributing)
+- [License](#license)
 
+## Project Overview
 
-**Table of Contents**
+This project is designed to be a full-stack chat application where users can create accounts, log in, and chat in real-time. The backend is responsible for storing user data, messages, and managing WebSocket connections for real-time chat. The frontend provides a user interface for interacting with the application.
 
-- <a href="#features">Features</a>
-- <a href="#stack">Tech Stack</a>
-- <a href="#install">Installation</a>
-- <a href="#setup">Setup</a>
-- <a href="test">Test</a>
-- <a href="#api">API Endpoints</a>
-- <a href="#contribute">Contributing</a>
-- <a href="#licence">Licence</a>
+## Prerequisites
 
-<h2 id="features">Features</h2>
+Before you begin, ensure you have the following installed on your system:
 
-<h2 id="stack">Tech Stack</h2>
+- **Node.js** (for both client and server)
+- **npm** (Node package manager)
+- **MongoDB** (for database storage)
+- **Redis Client** (for session management)
+- **WebSocket library** (for real-time communication)
 
-<h2 id="install">Installation</h2>
+If you're using Ubuntu, you can install the required dependencies by following the official Node.js and MongoDB installation guides.
 
-<h2 id="setup">Setup</h2>
+## Installation
 
-<h2 id="test">Test</h2>
+### Client Setup
 
-<h2 id="api">API Endpoints</h2>
+1. Navigate to the `client` directory:
 
-<h2 id="contribute">Contributing</h2>
+    ```bash
+    cd client
+    ```
 
-<h2 id="license">License</h2>
+2. Install the required dependencies:
+
+    ```bash
+    npm install
+    ```
+
+3. (Optional) If you are using environment variables for configuration, create a `.env` file based on `.env.example` and update the variables accordingly.
+
+4. To run the client locally:
+
+    ```bash
+    npm start
+    ```
+
+    This will start the development server for the client, usually available at `http://localhost:3000`.
+
+For more detailed instructions on the client-side setup, visit the `client/README.md` inside the client folder.
+
+### Server Setup
+
+1. Navigate to the `server` directory:
+
+    ```bash
+    cd server
+    ```
+
+2. Install the required dependencies:
+
+    ```bash
+    npm install
+    ```
+
+3. (Optional) Configure the environment variables by creating a `.env` file in the `server` folder and updating it based on `.env.example`.
+
+4. To run the server locally:
+
+    ```bash
+    npm start
+    ```
+
+    This will start the backend server, usually available at `http://localhost:5000` or the port you have configured.
+
+For detailed instructions on server-side setup, visit the `server/README.md` inside the server folder.
+
+## Running the Application
+
+Once both the client and server are running, you should be able to interact with the application via the client interface at `http://localhost:3000`.
+
+Ensure that the server is running on the correct port and that the client is configured to communicate with it.
+
+## Contributing
+
+We welcome contributions to improve the app! If you’d like to contribute, please fork the repository, create a branch, and submit a pull request.
+
+Be sure to follow the code of conduct and check the open issues for guidance on where help is needed.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
